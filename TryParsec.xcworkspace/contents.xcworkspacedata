@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <Group
+      location = "container:"
+      name = "Examples">
+      <FileRef
+         location = "group:Examples/TryParsecPlayground.playground">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
+      name = "Carthage">
+      <FileRef
+         location = "group:Carthage/Checkouts/Result/Result.xcodeproj">
+      </FileRef>
+      <Group
+         location = "container:"
+         name = "Test Dependencies">
+         <FileRef
+            location = "group:Carthage/Checkouts/Curry/Curry.xcodeproj">
+         </FileRef>
+         <FileRef
+            location = "group:Carthage/Checkouts/Quick/Quick.xcodeproj">
+         </FileRef>
+         <FileRef
+            location = "group:Carthage/Checkouts/Nimble/Nimble.xcodeproj">
+         </FileRef>
+      </Group>
+   </Group>
+   <FileRef
+      location = "group:TryParsec.xcodeproj">
+   </FileRef>
+</Workspace>

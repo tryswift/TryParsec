@@ -1,0 +1,17 @@
+PODS:
+  - Result (1.0.2)
+  - TryParsec (0.1.0):
+    - Result (~> 1.0)
+
+DEPENDENCIES:
+  - TryParsec (from `../../`)
+
+EXTERNAL SOURCES:
+  TryParsec:
+    :path: "../../"
+
+SPEC CHECKSUMS:
+  Result: dd3dd71af3fa2e262f1a999e14fba2c25ec14f16
+  TryParsec: 1b5dff8273b983e1d4c743ab174b27a188fceae3
+
+COCOAPODS: 0.39.0

@@ -1,0 +1,12 @@
+platform :osx, '10.9'
+
+use_frameworks!
+
+#pod 'TryParsec/Core', :path => '../../'
+#pod 'TryParsec/Arithmetic', :path => '../../'
+#pod 'TryParsec/CSV', :path => '../../'
+#pod 'TryParsec/XML', :path => '../../'
+#pod 'TryParsec/JSON', :path => '../../'
+
+# all subspecs
+pod 'TryParsec', :path => '../../'

@@ -1,0 +1,128 @@
+fastlane_version "1.61.0"
+default_platform :mac
+
+UNIVERSAL_SCHEME = "TryParsec"
+RELEASE_BRANCH = "swift/2.0"
+
+before_all do
+  #carthage(use_submodules: true, no_build: true) # checkout only
+  sh("git submodule sync && git submodule update --init --recursive") # for non-Carthage users
+end
+
+desc "`xcodebuild clean`"
+lane :clean do
+  xcclean(scheme: UNIVERSAL_SCHEME)
+end
+
+desc "Lints Podspec"
+lane :pod_lint do
+  sh("cd .. && pod lib lint")
+end
+
+desc "`pod install` & builds demo app"
+lane :pod_demo do
+  demo_dir = "Examples/PodsDemo"
+  demo_xcworkspace = "#{demo_dir}/PodsDemo.xcworkspace"
+  build_dir = "#{demo_dir}/build"
+
+  sh("rm -rf ../#{build_dir}")
+
+  cocoapods(
+    podfile: "Examples/PodsDemo/Podfile",
+    clean: true
+  )
+
+  gym(
+    workspace: demo_xcworkspace,
+    configuration: "Debug",
+    scheme: "PodsDemo",
+    clean: true,
+    output_directory: build_dir,
+    output_name: "PodsDemo.ipa"
+  )
+end
+
+desc "Prepares `TryParsecPlayground` by _carefully_ building all of its dependencies"
+lane :play do
+  xcodebuild(
+    scheme: "TryParsecBenchmark", # also contains test-dependency
+    build: true,
+    xcargs: "-configuration Debug",
+    #test: false,
+    destination: "platform=OS X"
+  )
+  sh("cd .. && open TryParsec.xcworkspace")
+end
+
+desc "Runs tests in all platforms"
+lane :test_all do |options|
+  test_universal_framework(platform: :OSX, scheme: UNIVERSAL_SCHEME)
+  test_universal_framework(platform: :iOS, scheme: UNIVERSAL_SCHEME)
+  test_universal_framework(platform: :tvOS, scheme: UNIVERSAL_SCHEME)
+  # test_universal_framework(platform: :watchOS, scheme: UNIVERSAL_SCHEME)  # no XCTest in watchOS
+end
+
+desc "Releases new version"
+lane :bump do |options|
+  bump_local(options)
+  bump_remote(options)
+end
+
+desc "Prepares release for new version (no remote push)"
+lane :bump_local do |options|
+  target_version = options[:version]
+  raise "Parameter `version` is missing. Use `fastlane release version:{version_number}`.`" if target_version.nil?
+
+  ensure_git_branch(branch: RELEASE_BRANCH)
+  ensure_git_status_clean
+
+  #test_all
+  pod_lint
+
+  increment_version_number(version_number: target_version)
+
+  version_bump_podspec(path: "TryParsec.podspec", version_number: target_version)
+
+  git_commit(
+    path: ["TryParsec.podspec", "Sources/Info.plist", "Tests/Info.plist"],
+    message: "Bump version to #{target_version}"
+  )
+  add_git_tag tag: target_version
+end
+
+desc "Push new version to remote"
+lane :bump_remote do |options|
+  target_version = options[:version]
+  raise "Parameter `version` is missing. Use `fastlane release version:{version_number}`.`" if target_version.nil?
+
+  raise "Aborted" unless prompt(text: "Push to remote?", boolean: true)
+
+  ensure_git_branch(branch: RELEASE_BRANCH)
+  ensure_git_status_clean
+
+  push_to_git_remote
+  pod_push
+end
+
+platform :mac do
+  lane :test do
+    test_universal_framework(platform: :OSX, scheme: UNIVERSAL_SCHEME)
+  end
+
+  desc "Runs benchmark test using Swift Package Manager (Experimental)"
+  lane :bench do
+    sh("cd ../Benchmark && swift build --configuration release && .build/release/TryParsecBenchmark")
+  end
+end
+
+platform :ios do
+  lane :test do
+    test_universal_framework(platform: :iOS, scheme: UNIVERSAL_SCHEME)
+  end
+end
+
+after_all do |lane|
+end
+
+error do |lane, exception|
+end

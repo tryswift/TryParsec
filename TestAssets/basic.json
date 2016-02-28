@@ -1,0 +1,28 @@
+{
+    "string": "hello",
+    "int": 100,
+    "double": 123.45,
+    "bool": true,
+    "null": null,
+    "array": ["hello", 9.99, false],
+    "arrayOfArray": [["value"]],
+    "dict": {
+        "string": "hello",
+        "num": 123.45,
+        "bool": true,
+        "null": null,
+        "array": ["hello", 9.99, false]
+    },
+    "dictOfDict": {
+        "dict": {
+            "key" : "value"
+        }
+    },
+    "subModel": {
+        "string": "hello",
+        "num": 123.45,
+        "bool": true,
+        "null": null,
+        "array": ["hello", 9.99, false]
+    }
+}

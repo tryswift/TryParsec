@@ -1,0 +1,4 @@
+github "thoughtbot/Curry" "4f69b52" # Swift 3.0 support
+github "Quick/Quick"
+github "Quick/Nimble" "e184f22"     # BeVoid support
+github "mrackwitz/xcconfigs"
