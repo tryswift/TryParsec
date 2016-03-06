@@ -1,4 +1,4 @@
-fastlane_version "1.61.0"
+fastlane_version "1.51.0"
 default_platform :mac
 
 UNIVERSAL_SCHEME = "TryParsec"

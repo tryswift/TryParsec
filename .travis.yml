@@ -1,0 +1,19 @@
+language: objective-c
+osx_image: xcode7.2
+
+install:
+  - brew update
+  - brew install swiftlint || brew outdated swiftlint || brew upgrade swiftlint
+  - swiftlint version
+
+script:
+  - set -o pipefail
+  - xcodebuild -workspace 'TryParsec.xcworkspace' -scheme 'TryParsec' -destination 'platform=OS X' test | xcpretty
+  - xcodebuild -workspace 'TryParsec.xcworkspace' -scheme 'TryParsec' -destination 'platform=iOS Simulator,name=iPhone 6s' test | xcpretty
+  - xcodebuild -workspace 'TryParsec.xcworkspace' -scheme 'TryParsec' -destination 'platform=tvOS Simulator,name=Apple TV 1080p' test | xcpretty
+  - xcodebuild -workspace 'TryParsec.xcworkspace' -scheme 'TryParsec' -destination 'platform=watchOS Simulator,name=Apple Watch - 38mm' build | xcpretty
+  - pod lib lint
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - sleep 5   # see also https://github.com/Moya/Moya/pull/317
