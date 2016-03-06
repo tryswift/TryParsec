@@ -809,6 +809,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1FF4206B1C4166EC00F69CBA /* UniversalFramework_Framework.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -828,6 +829,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1FF4206B1C4166EC00F69CBA /* UniversalFramework_Framework.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
