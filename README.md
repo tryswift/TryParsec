@@ -110,6 +110,11 @@ This library is heavily inspired by following developers & libraries:
 - thoughtbot: Author of [Argo](https://github.com/thoughtbot/Argo) (Swift JSON decoding library)
 
 
+## References
+
+- [Parser Combinator in Swift // Speaker Deck](https://speakerdeck.com/inamiy/parser-combinator-in-swift)
+
+
 ## Licence
 
 [MIT](LICENSE)
