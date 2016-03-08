@@ -142,18 +142,13 @@ extension Dictionary: FromJSON // where Key == String, Value: FromJSON
 
 // MARK: FromJSON helpers
 
-/// Helper method to convert `JSON.Object` to `Result`.
-public func fromJSONObject<FJ: FromJSON>(json: JSON, mapper: [String : JSON] -> Result<FJ, JSON.ParseError>) -> Result<FJ, JSON.ParseError>
+/// Extracts `FromJSON` value for `key` from `json`.
+public func !! <FJ: FromJSON>(json: JSON, key: String) -> Result<FJ, JSON.ParseError>
 {
     guard case let .Object(dict) = json else {
         return typeMismatch(json, expected: "JSON.Object")
     }
-    return mapper(dict)
-}
 
-/// Extracts `FromJSON` value from `[String : JSON]` dictionary.
-public func !! <FJ: FromJSON>(dict: [String : JSON], key: String) -> Result<FJ, JSON.ParseError>
-{
     if let json = dict[key] {
         return FJ.fromJSON(json)
     }
@@ -163,14 +158,18 @@ public func !! <FJ: FromJSON>(dict: [String : JSON], key: String) -> Result<FJ, 
 }
 
 ///
-/// Extracts `FromJSON` value from `[String : JSON]` dictionary.
+/// Extracts `FromJSON` value for `key` from `json`.
 ///
 /// - Note:
 /// This is a workaround for `extension Optional`
 /// where `Self` and `Wrapped` can't constrain at same time.
 ///
-public func !! <FJ: FromJSON>(dict: [String : JSON], key: String) -> Result<FJ?, JSON.ParseError>
+public func !! <FJ: FromJSON>(json: JSON, key: String) -> Result<FJ?, JSON.ParseError>
 {
+    guard case let .Object(dict) = json else {
+        return typeMismatch(json, expected: "JSON.Object")
+    }
+
     if let json = dict[key] {
         if json == JSON.Null {
             return .Success(nil)
@@ -184,9 +183,13 @@ public func !! <FJ: FromJSON>(dict: [String : JSON], key: String) -> Result<FJ?,
     }
 }
 
-/// Optionally extracts `FromJSON` value from `[String : JSON]` dictionary.
-public func !? <FJ: FromJSON>(dict: [String : JSON], key: String) -> Result<FJ?, JSON.ParseError>
+/// Optionally extracts `FromJSON` value for `key` from `json`.
+public func !? <FJ: FromJSON>(json: JSON, key: String) -> Result<FJ?, JSON.ParseError>
 {
+    guard case let .Object(dict) = json else {
+        return typeMismatch(json, expected: "JSON.Object")
+    }
+
     if let json = dict[key] {
         return FJ.fromJSON(json).map { Optional($0) }
     }
