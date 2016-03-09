@@ -127,9 +127,9 @@ func cons_USV_appendContentsOf(xs: String.UnicodeScalarView) -> String.UnicodeSc
 
 func cons_String_appendContentsOf(x: UnicodeScalar) -> String -> String
 {
-    return { str in
+    return { str2 in
         var str = String(x)
-        str.appendContentsOf(str)
+        str.appendContentsOf(str2)
         return str
     }
 }
