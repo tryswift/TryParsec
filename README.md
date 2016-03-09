@@ -1,4 +1,4 @@
-# TryParsec
+# TryParsec [![codebeat](https://codebeat.co/badges/f3458ed8-7257-4a7f-980d-5ad0bb5b7f0b)](https://codebeat.co/projects/github-com-inamiy-tryparsec)
 
 Monadic Parser Combinator for [try! Swift](http://www.tryswiftconf.com/).
 
