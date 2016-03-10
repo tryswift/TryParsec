@@ -2,7 +2,7 @@ import XCTest
 import TryParsecExperiment
 
 private var _testString = ""
-private let _loops = 100
+private let _loops = 1000
 
 class ParsecTests: XCTestCase {
     
