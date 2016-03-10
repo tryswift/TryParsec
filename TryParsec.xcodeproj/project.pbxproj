@@ -119,18 +119,18 @@
 		1FA466911C67F45A0089C8D9 /* ParserSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParserSpec.swift; sourceTree = "<group>"; };
 		1FA466921C67F45A0089C8D9 /* UnicodeScalarViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnicodeScalarViewSpec.swift; sourceTree = "<group>"; };
 		1FA466931C67F45A0089C8D9 /* XMLSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLSpec.swift; sourceTree = "<group>"; };
-		1FA4669D1C67F49A0089C8D9 /* ConsPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConsPerformanceTests.swift; sourceTree = "<group>"; };
-		1FA4669E1C67F49A0089C8D9 /* JSONPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONPerformanceTests.swift; sourceTree = "<group>"; };
-		1FA4669F1C67F49A0089C8D9 /* StringAppendPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringAppendPerformanceTests.swift; sourceTree = "<group>"; };
-		1FA466A01C67F49A0089C8D9 /* StringConversionPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringConversionPerformanceTests.swift; sourceTree = "<group>"; };
-		1FA466A11C67F49A0089C8D9 /* StringRemovePerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringRemovePerformanceTests.swift; sourceTree = "<group>"; };
-		1FA466A21C67F49A0089C8D9 /* UnconsPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnconsPerformanceTests.swift; sourceTree = "<group>"; };
+		1FA4669D1C67F49A0089C8D9 /* ConsPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConsPerformanceTests.swift; path = TryParsecBenchmark/ConsPerformanceTests.swift; sourceTree = "<group>"; };
+		1FA4669E1C67F49A0089C8D9 /* JSONPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = JSONPerformanceTests.swift; path = TryParsecBenchmark/JSONPerformanceTests.swift; sourceTree = "<group>"; };
+		1FA4669F1C67F49A0089C8D9 /* StringAppendPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringAppendPerformanceTests.swift; path = TryParsecBenchmark/StringAppendPerformanceTests.swift; sourceTree = "<group>"; };
+		1FA466A01C67F49A0089C8D9 /* StringConversionPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringConversionPerformanceTests.swift; path = TryParsecBenchmark/StringConversionPerformanceTests.swift; sourceTree = "<group>"; };
+		1FA466A11C67F49A0089C8D9 /* StringRemovePerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringRemovePerformanceTests.swift; path = TryParsecBenchmark/StringRemovePerformanceTests.swift; sourceTree = "<group>"; };
+		1FA466A21C67F49A0089C8D9 /* UnconsPerformanceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UnconsPerformanceTests.swift; path = TryParsecBenchmark/UnconsPerformanceTests.swift; sourceTree = "<group>"; };
 		1FA466C91C67F4B70089C8D9 /* TryParsecPerformanceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TryParsecPerformanceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FAAF1621BD2FF8900B26694 /* FromJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FromJSON.swift; sourceTree = "<group>"; };
 		1FB5C1C21C829B790063B2EF /* TestAssets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TestAssets; sourceTree = SOURCE_ROOT; };
 		1FBE4C201C44199000545923 /* ToJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToJSON.swift; sourceTree = "<group>"; };
 		1FC182431C6AC14200FB1EC9 /* TryParsecBenchmark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TryParsecBenchmark.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		1FC182601C6AC19A00FB1EC9 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		1FC182601C6AC19A00FB1EC9 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = main.swift; path = TryParsecBenchmark/main.swift; sourceTree = "<group>"; };
 		1FC183B21C6AC24100FB1EC9 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = "../../Library/Developer/Xcode/DerivedData/TryParsec-bergsxxpazqchkerucnpexyejxub/Build/Products/Release/Result.framework"; sourceTree = "<group>"; };
 		1FD638591C378EAB00941439 /* RangeReplaceableCollectionType+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RangeReplaceableCollectionType+Helper.swift"; sourceTree = "<group>"; };
 		1FD6385F1C37A34500941439 /* UnicodeScalarView+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UnicodeScalarView+Helper.swift"; sourceTree = "<group>"; };
@@ -253,20 +253,6 @@
 			path = ../excludedTests/TryParsec/Specs;
 			sourceTree = "<group>";
 		};
-		1FA4669C1C67F49A0089C8D9 /* PerformanceTests */ = {
-			isa = PBXGroup;
-			children = (
-				1FA4669E1C67F49A0089C8D9 /* JSONPerformanceTests.swift */,
-				1FA4669F1C67F49A0089C8D9 /* StringAppendPerformanceTests.swift */,
-				1FA466A01C67F49A0089C8D9 /* StringConversionPerformanceTests.swift */,
-				1FA466A11C67F49A0089C8D9 /* StringRemovePerformanceTests.swift */,
-				1FA4669D1C67F49A0089C8D9 /* ConsPerformanceTests.swift */,
-				1FA466A21C67F49A0089C8D9 /* UnconsPerformanceTests.swift */,
-			);
-			name = PerformanceTests;
-			path = ../Benchmark/Tests/Benchmark;
-			sourceTree = "<group>";
-		};
 		1FAAF15E1BD2FEF500B26694 /* JSON */ = {
 			isa = PBXGroup;
 			children = (
@@ -307,10 +293,10 @@
 		1FC182501C6AC19A00FB1EC9 /* Benchmark */ = {
 			isa = PBXGroup;
 			children = (
-				1FC182601C6AC19A00FB1EC9 /* main.swift */,
+				1FD463BF1C91BD32001F390B /* Sources */,
+				1FD463C11C91BD6D001F390B /* Tests */,
 			);
-			name = Benchmark;
-			path = Benchmark/Sources/TryParsecBenchmark;
+			path = Benchmark;
 			sourceTree = "<group>";
 		};
 		1FD19BB71B8E41730066895A /* Basis */ = {
@@ -325,6 +311,27 @@
 			name = Basis;
 			sourceTree = "<group>";
 		};
+		1FD463BF1C91BD32001F390B /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				1FC182601C6AC19A00FB1EC9 /* main.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		1FD463C11C91BD6D001F390B /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				1FA4669E1C67F49A0089C8D9 /* JSONPerformanceTests.swift */,
+				1FA4669F1C67F49A0089C8D9 /* StringAppendPerformanceTests.swift */,
+				1FA466A01C67F49A0089C8D9 /* StringConversionPerformanceTests.swift */,
+				1FA466A11C67F49A0089C8D9 /* StringRemovePerformanceTests.swift */,
+				1FA4669D1C67F49A0089C8D9 /* ConsPerformanceTests.swift */,
+				1FA466A21C67F49A0089C8D9 /* UnconsPerformanceTests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
 		1FE8E4151B896E9100E1F2D0 = {
 			isa = PBXGroup;
 			children = (
@@ -333,6 +340,7 @@
 				1FE8E4211B896E9100E1F2D0 /* Sources */,
 				1FE8E42D1B896E9100E1F2D0 /* Tests */,
 				1FC182501C6AC19A00FB1EC9 /* Benchmark */,
+				1FB5C1C21C829B790063B2EF /* TestAssets */,
 				1F92984F1BC3598300B68621 /* Frameworks */,
 				1FE8E4201B896E9100E1F2D0 /* Products */,
 			);
@@ -374,8 +382,6 @@
 			children = (
 				1FA466841C67F3FE0089C8D9 /* Helpers */,
 				1FA4668B1C67F45A0089C8D9 /* Specs */,
-				1FA4669C1C67F49A0089C8D9 /* PerformanceTests */,
-				1FB5C1C21C829B790063B2EF /* TestAssets */,
 				1FE8E4301B896E9100E1F2D0 /* Info.plist */,
 			);
 			path = Tests;
