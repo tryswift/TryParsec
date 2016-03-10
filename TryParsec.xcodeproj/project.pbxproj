@@ -234,7 +234,7 @@
 				1FA466871C67F3FE0089C8D9 /* XCTestCase+Helper.swift */,
 			);
 			name = Helpers;
-			path = ../excludedTests/Helpers;
+			path = ../excludedTests/TryParsec/Helpers;
 			sourceTree = "<group>";
 		};
 		1FA4668B1C67F45A0089C8D9 /* Specs */ = {
@@ -250,7 +250,7 @@
 				1FA466901C67F45A0089C8D9 /* JSONSpec.swift */,
 			);
 			name = Specs;
-			path = ../excludedTests/Specs;
+			path = ../excludedTests/TryParsec/Specs;
 			sourceTree = "<group>";
 		};
 		1FA4669C1C67F49A0089C8D9 /* PerformanceTests */ = {
