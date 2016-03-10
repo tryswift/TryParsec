@@ -233,7 +233,8 @@
 				1FA466861C67F3FE0089C8D9 /* TestModel.swift */,
 				1FA466871C67F3FE0089C8D9 /* XCTestCase+Helper.swift */,
 			);
-			path = Helpers;
+			name = Helpers;
+			path = ../excludedTests/Helpers;
 			sourceTree = "<group>";
 		};
 		1FA4668B1C67F45A0089C8D9 /* Specs */ = {
@@ -248,7 +249,8 @@
 				1FA466931C67F45A0089C8D9 /* XMLSpec.swift */,
 				1FA466901C67F45A0089C8D9 /* JSONSpec.swift */,
 			);
-			path = Specs;
+			name = Specs;
+			path = ../excludedTests/Specs;
 			sourceTree = "<group>";
 		};
 		1FA4669C1C67F49A0089C8D9 /* PerformanceTests */ = {
