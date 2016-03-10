@@ -25,7 +25,7 @@ module Fastlane
 
     class TestUniversalFrameworkAction < Action
 
-      def self._test_platform(platform, scheme:)
+      def self._test_platform(platform, scheme: scheme)
         if SIMULATORS[platform.to_sym].nil? then
           raise "Simulator not found for #{platform}."
         end
