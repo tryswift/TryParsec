@@ -17,14 +17,14 @@ func startBenchmark<T>(f: String -> T, _ filename: String, _ fileExt: String)
 {
     let jsonString = loadString(filename, fileExt)
 
-    for _ in 1...10 {
-        let startTime = now()
+    let startTime = now()
+    for _ in 1...1000 {
 
         f(jsonString)
 
-        let diffTime = now() - startTime
-        print(diffTime)
     }
+    let diffTime = now() - startTime
+    print(diffTime)
 }
 
 func loadString(resourceName: String, _ extensionName: String, filename: String = __FILE__, functionName: String = __FUNCTION__, line: Int = __LINE__) -> String

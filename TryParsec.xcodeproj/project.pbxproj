@@ -233,7 +233,8 @@
 				1FA466861C67F3FE0089C8D9 /* TestModel.swift */,
 				1FA466871C67F3FE0089C8D9 /* XCTestCase+Helper.swift */,
 			);
-			path = Helpers;
+			name = Helpers;
+			path = ../excludedTests/TryParsec/Helpers;
 			sourceTree = "<group>";
 		};
 		1FA4668B1C67F45A0089C8D9 /* Specs */ = {
@@ -248,7 +249,8 @@
 				1FA466931C67F45A0089C8D9 /* XMLSpec.swift */,
 				1FA466901C67F45A0089C8D9 /* JSONSpec.swift */,
 			);
-			path = Specs;
+			name = Specs;
+			path = ../excludedTests/TryParsec/Specs;
 			sourceTree = "<group>";
 		};
 		1FA4669C1C67F49A0089C8D9 /* PerformanceTests */ = {
@@ -261,7 +263,8 @@
 				1FA4669D1C67F49A0089C8D9 /* ConsPerformanceTests.swift */,
 				1FA466A21C67F49A0089C8D9 /* UnconsPerformanceTests.swift */,
 			);
-			path = PerformanceTests;
+			name = PerformanceTests;
+			path = ../Benchmark/Tests/Benchmark;
 			sourceTree = "<group>";
 		};
 		1FAAF15E1BD2FEF500B26694 /* JSON */ = {
@@ -306,7 +309,8 @@
 			children = (
 				1FC182601C6AC19A00FB1EC9 /* main.swift */,
 			);
-			path = Benchmark;
+			name = Benchmark;
+			path = Benchmark/Sources/TryParsecBenchmark;
 			sourceTree = "<group>";
 		};
 		1FD19BB71B8E41730066895A /* Basis */ = {
@@ -361,7 +365,8 @@
 				1FAAF15E1BD2FEF500B26694 /* JSON */,
 				1FE8E4241B896E9100E1F2D0 /* Info.plist */,
 			);
-			path = Sources;
+			name = Sources;
+			path = Sources/TryParsec;
 			sourceTree = "<group>";
 		};
 		1FE8E42D1B896E9100E1F2D0 /* Tests */ = {
@@ -817,7 +822,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = Sources/Info.plist;
+				INFOPLIST_FILE = Sources/TryParsec/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.inamiy.TryParsec;
 				PRODUCT_NAME = TryParsec;
@@ -837,7 +842,7 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
-				INFOPLIST_FILE = Sources/Info.plist;
+				INFOPLIST_FILE = Sources/TryParsec/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.inamiy.TryParsec;
 				PRODUCT_NAME = TryParsec;
