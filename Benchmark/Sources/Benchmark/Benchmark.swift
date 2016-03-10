@@ -1,2 +1,1 @@
-import Curry
 import TryParsec
