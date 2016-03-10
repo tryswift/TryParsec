@@ -263,7 +263,8 @@
 				1FA4669D1C67F49A0089C8D9 /* ConsPerformanceTests.swift */,
 				1FA466A21C67F49A0089C8D9 /* UnconsPerformanceTests.swift */,
 			);
-			path = PerformanceTests;
+			name = PerformanceTests;
+			path = ../Benchmark/Tests/Benchmark;
 			sourceTree = "<group>";
 		};
 		1FAAF15E1BD2FEF500B26694 /* JSON */ = {
@@ -308,7 +309,8 @@
 			children = (
 				1FC182601C6AC19A00FB1EC9 /* main.swift */,
 			);
-			path = Benchmark;
+			name = Benchmark;
+			path = Benchmark/Sources/TryParsecBenchmark;
 			sourceTree = "<group>";
 		};
 		1FD19BB71B8E41730066895A /* Basis */ = {
