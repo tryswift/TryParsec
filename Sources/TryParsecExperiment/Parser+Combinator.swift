@@ -1,7 +1,7 @@
 /// Parses zero or one occurrence of `parser`.
 /// - SeeAlso: Haskell Parsec's `optionMaybe`.
 public func zeroOrOne<Out>(parser: Parser<Out>.Function) -> Parser<Out?>.Function {
-    return parser <&> Optional<Out>.init // <|> pure(Optional<Out>.None)
+    return parser <&> Optional<Out>.init <|> { pure(Optional<Out>.None) }
 }
 
 /// Parses zero or more occurrences of `parser`.
