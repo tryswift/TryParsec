@@ -27,10 +27,24 @@ internal func cons(x: StringElement) -> StringContainer -> StringContainer
 
 /// Parses zero or more occurrences of `parser`.
 /// - Note: Returning parser never fails.
-public func many(parser: Result<StringElement>.Parser) -> Result<StringContainer>.Parser {
-    return many1(parser) <|> { pure(StringContainer()) }
+public func many(p: Result<StringElement>.Parser) -> Result<StringContainer>.Parser {
+    return { input in
+        var result = StringContainer()
+        var remainder = input
+        while true {
+            switch parse(p, remainder) {
+            case .Done(let input, let out):
+                result.append(out)
+                remainder = input
+            case .Fail(_, _, _): return .Done(remainder, result)
+            }
+        }
+    }
 }
-
+//public func many(parser: Result<StringElement>.Parser) -> Result<StringContainer>.Parser {
+//    return many1(parser) <|> { pure(StringContainer()) }
+//}
+//
 /// Parses one or more occurrences of `parser`.
 public func many1(parser: Result<StringElement>.Parser) -> Result<StringContainer>.Parser {
     return cons <^> parser <*> { many(parser) }

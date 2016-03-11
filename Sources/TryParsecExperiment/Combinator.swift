@@ -6,10 +6,24 @@ public func zeroOrOne<Out>(parser: Result<Out>.Parser) -> Result<Out?>.Parser {
 
 /// Parses zero or more occurrences of `parser`.
 /// - Note: Returning parser never fails.
-public func many<Outs: RangeReplaceableCollectionType>(parser: Result<Outs.Generator.Element>.Parser) -> Result<Outs>.Parser {
-    return many1(parser) <|> { pure(Outs()) }
+public func many<Outs: RangeReplaceableCollectionType>(p: Result<Outs.Generator.Element>.Parser) -> Result<Outs>.Parser {
+    return { input in
+        var result = Outs()
+        var remainder = input
+        while true {
+            switch parse(p, remainder) {
+            case .Done(let input, let out):
+                result.append(out)
+                remainder = input
+            case .Fail(_, _, _): return .Done(remainder, result)
+            }
+        }
+    }
 }
-
+//public func many<Outs: RangeReplaceableCollectionType>(parser: Result<Outs.Generator.Element>.Parser) -> Result<Outs>.Parser {
+//    return many1(parser) <|> { pure(Outs()) }
+//}
+//
 /// Parses one or more occurrences of `parser`.
 public func many1<Outs: RangeReplaceableCollectionType>(parser: Result<Outs.Generator.Element>.Parser) -> Result<Outs>.Parser {
     return cons <^> parser <*> { many(parser) }
