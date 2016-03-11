@@ -1,6 +1,6 @@
-import TryParsec
+import TryParsecExperiment
 
-extension Reply
+extension Parser
 {
     var _done: (input: In, output: Out)?
     {

@@ -1,4 +1,4 @@
-import Foundation
+import Result
 
 public typealias StringContainer = String.UnicodeScalarView
 public typealias StringElement = String.UnicodeScalarView.Generator.Element
@@ -10,55 +10,54 @@ extension StringContainer {
     }
 }
 
-extension StringContainer: StringLiteralConvertible {
-    public init(stringLiteral value: String) {
-        self = value.unicodeScalars
-    }
-
-    public init(extendedGraphemeClusterLiteral value: String) {
-        self = value.unicodeScalars
-    }
-
-    public init(unicodeScalarLiteral value: String) {
-        self = value.unicodeScalars
-    }
-}
-
 /// Runs a parser `p`.
 /// - Returns: `Reply<In, Out>`
-public func parse<Out>(parser: Result<Out>.Parser, _ input: StringContainer) -> Result<Out> {
+public func parse<Out>(parser: Parser<Out>.Function, _ input: StringContainer) -> Parser<Out> {
     return parser(input)
 }
 
 /// Runs a parser `p` that cannot be resupplied via a 'Partial' reply.
-/// - Returns: `Result<Out, ParseError>`
-public func parseOnly<Out>(p: Result<Out>.Parser, _ input: StringContainer) -> Out? {
+/// - Returns: `Parser<Out, ParseError>`
+public func parseOnly<Out>(p: Parser<Out>.Function, _ input: StringContainer) -> Result<Out, ParseError> {
     return parse(p, input).result
 }
 
 /// MARK: Result
-public enum Result<Out> {
+public enum Parser<Out> {
     /// The parse failed
     /// - Parameter In: the input that had not yet been consumed when failure occured
     /// - Parameter [String]: a list of contexts in which error occured
     /// - Parameter String: the message describing the error
-    case Fail(In, [String], String)
+    case Fail(StringContainer, [String], String)
 
     /// The parse succeeded
     /// - Parameter In: the input that had not yet been consumed
-    case Done(In, Out)
+    case Done(StringContainer, Out)
 
     public typealias In = StringContainer
-    public typealias Parser = In -> Result<Out>
+    public typealias Function = StringContainer -> Parser<Out>
 }
 
-extension Result {
-    var result: Out? {
-        guard case let .Done(_, output) = self else { return nil }
-        return output
+extension Parser {
+    public var result: Result<Out, ParseError>
+    {
+        switch self {
+        case let .Fail(_, labels, message):
+            if labels.count > 0 {
+                let labelString = labels.joinWithSeparator(" > ")
+                return .Failure(.Message("[\(labelString)] Failed reading: \(message)"))
+            }
+            else {
+                return .Failure(.Message("Failed reading: \(message)"))
+            }
+        case let .Done(_, output):
+            return .Success(output)
+            //            case .Partial(_):
+            //                return .Failure(.Partial)
+        }
     }
 
-    public func map<Out2>(f: Out -> Out2) -> Result<Out2> {
+    public func map<Out2>(f: Out -> Out2) -> Parser<Out2> {
         switch self {
         case let .Fail(input, contexts, message):
             return .Fail(input, contexts, message)
@@ -69,18 +68,18 @@ extension Result {
 }
 
 /// Haskell's `<$>` or `fmap`, Swift's `map`.
-public func <^> <Out1, Out2>(f: Out1 -> Out2, result: Result<Out1>) -> Result<Out2> {
-    return result.map(f)
-}
+//public func <^> <Out1, Out2>(f: Out1 -> Out2, result: Parser<Out1>) -> Parser<Out2> {
+//    return result.map(f)
+//}
 
 // MARK: Monad
 
-public func fail<Out>(message: String) -> Result<Out>.Parser {
+public func fail<Out>(message: String) -> Parser<Out>.Function {
     return { .Fail($0, [], message) }
 }
 
 /// Haskell's `>>=` & Swift's `flatMap`.
-public func >>- <Out1, Out2>(parser: Result<Out1>.Parser, f: Out1 -> Result<Out2>.Parser) -> Result<Out2>.Parser {
+public func >>- <Out1, Out2>(parser: Parser<Out1>.Function, f: Out1 -> Parser<Out2>.Function) -> Parser<Out2>.Function {
     return { input in
         switch parser(input) {
         case let .Fail(input2, contexts, message):
@@ -94,13 +93,13 @@ public func >>- <Out1, Out2>(parser: Result<Out1>.Parser, f: Out1 -> Result<Out2
 // MARK: Alternative
 
 /// The identity of `<|>`.
-public func empty<Out>() -> Result<Out>.Parser {
+public func empty<Out>() -> Parser<Out>.Function {
     return fail("empty")
 }
 
 /// Alternation, choice.
 /// Uses `q` only if `p` failed.
-public func <|> <Out>(parser1: Result<Out>.Parser, parser2: () -> Result<Out>.Parser) -> Result<Out>.Parser {
+public func <|> <Out>(parser1: Parser<Out>.Function, parser2: () -> Parser<Out>.Function) -> Parser<Out>.Function {
     return { input in
         let result = parser1(input)
         switch result {
@@ -115,12 +114,12 @@ public func <|> <Out>(parser1: Result<Out>.Parser, parser2: () -> Result<Out>.Pa
 // MARK: Applicative
 
 /// Lifts `output` to `Parser`.
-public func pure<Out>(output: Out) -> Result<Out>.Parser {
+public func pure<Out>(output: Out) -> Parser<Out>.Function {
     return { .Done($0, output) }
 }
 
 /// Sequential application.
-public func <*> <Out1, Out2>(parser1: Result<Out1 -> Out2>.Parser, parser2: () -> Result<Out1>.Parser) -> Result<Out2>.Parser {
+public func <*> <Out1, Out2>(parser1: Parser<Out1 -> Out2>.Function, parser2: () -> Parser<Out1>.Function) -> Parser<Out2>.Function {
     return { input in
         switch parser1(input) {
         case let .Fail(input2, contexts, message):
@@ -137,7 +136,7 @@ public func <*> <Out1, Out2>(parser1: Result<Out1 -> Out2>.Parser, parser2: () -
 }
 
 /// Sequence actions, discarding right (value of the second argument).
-public func <* <Out1, Out2>(parser1: Result<Out1>.Parser, parser2: () -> Result<Out2>.Parser) -> Result<Out1>.Parser {
+public func <* <Out1, Out2>(parser1: Parser<Out1>.Function, parser2: () -> Parser<Out2>.Function) -> Parser<Out1>.Function {
     return { input in
         switch parser1(input) {
         case let .Fail(input2, contexts, message):
@@ -154,7 +153,7 @@ public func <* <Out1, Out2>(parser1: Result<Out1>.Parser, parser2: () -> Result<
 }
 
 /// Sequence actions, discarding left (value of the first argument).
-public func *> <Out1, Out2>(parser1: Result<Out1>.Parser, parser2: () -> Result<Out2>.Parser) -> Result<Out2>.Parser {
+public func *> <Out1, Out2>(parser1: Parser<Out1>.Function, parser2: () -> Parser<Out2>.Function) -> Parser<Out2>.Function {
     return { input in
         switch parser1(input) {
         case let .Fail(input2, contexts, message):
@@ -168,7 +167,7 @@ public func *> <Out1, Out2>(parser1: Result<Out1>.Parser, parser2: () -> Result<
 // MARK: Functor
 
 /// Haskell's `<$>` or `fmap`, Swift's `map`.
-public func <^> <Out1, Out2>(f: Out1 -> Out2, parser: Result<Out1>.Parser) -> Result<Out2>.Parser {
+public func <^> <Out1, Out2>(f: Out1 -> Out2, parser: Parser<Out1>.Function) -> Parser<Out2>.Function {
     return { input in
         switch parser(input) {
         case let .Fail(input2, contexts, message):
@@ -180,14 +179,14 @@ public func <^> <Out1, Out2>(f: Out1 -> Out2, parser: Result<Out1>.Parser) -> Re
 }
 
 /// Argument-flipped `<^>`, i.e. `flip(<^>)`.
-public func <&> <Out1, Out2>(parser: Result<Out1>.Parser, f: Out1 -> Out2) -> Result<Out2>.Parser {
+public func <&> <Out1, Out2>(parser: Parser<Out1>.Function, f: Out1 -> Out2) -> Parser<Out2>.Function {
     return f <^> parser
 }
 
 // MARK: Label
 
 /// Adds name to parser.
-public func <?> <Out>(parser: Result<Out>.Parser, label: () -> String) -> Result<Out>.Parser {
+public func <?> <Out>(parser: Parser<Out>.Function, @autoclosure(escaping) label: () -> String) -> Parser<Out>.Function {
     return { input in
         let reply = parser(input)
         switch reply {
@@ -202,7 +201,7 @@ public func <?> <Out>(parser: Result<Out>.Parser, label: () -> String) -> Result
 // MARK: Peek
 
 /// Matches any first element to perform lookahead.
-public func peek() -> Result<StringElement>.Parser {
+public func peek() -> Parser<StringElement>.Function {
     return { input in
         if let head = input.first {
             return .Done(input, head)
@@ -213,7 +212,7 @@ public func peek() -> Result<StringElement>.Parser {
 }
 
 /// Matches only if all input has been consumed.
-public func endOfInput() -> Result<()>.Parser {
+public func endOfInput() -> Parser<()>.Function {
     return { input in
         if input.isEmpty {
             return .Done(input, ())

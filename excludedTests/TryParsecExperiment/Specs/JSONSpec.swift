@@ -1,4 +1,4 @@
-@testable import TryParsec
+@testable import TryParsecExperiment
 import Result
 import Quick
 import Nimble
@@ -220,17 +220,17 @@ class JSONSpec: QuickSpec
                 }
             }
 
-            it("decodes JSON file as _Model & encode") {
-                let jsonString = self.dynamicType.loadString("basic", "json")
-                print("jsonString =", jsonString)
-
-                let decoded: Result<_Model, JSON.ParseError> = decode(jsonString)
-                expect(decoded.value).toNot(beNil())
-                print("decoded =", decoded)
-
-                let encoded = encode(decoded.value!)
-                print("encoded =", encoded)
-            }
+//            it("decodes JSON file as _Model & encode") {
+//                let jsonString = self.dynamicType.loadString("basic", "json")
+//                print("jsonString =", jsonString)
+//
+//                let decoded: Result<_Model, JSON.ParseError> = decode(jsonString)
+//                expect(decoded.value).toNot(beNil())
+//                print("decoded =", decoded)
+//
+//                let encoded = encode(decoded.value!)
+//                print("encoded =", encoded)
+//            }
 
         }
 

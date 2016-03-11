@@ -16,9 +16,9 @@ internal func negate<N: SignedNumberType>(x: N) -> N {
 /// Haskell `(:)` (cons operator) for replacing slow `[x] + xs`.
 internal func cons<C: RangeReplaceableCollectionType>(x: C.Generator.Element) -> C -> C {
     return { xs in
-        var x = C(x)
-        x.appendContentsOf(xs)
-        return x
+        var xs = xs
+        xs.insert(x, atIndex: xs.startIndex)
+        return xs
     }
 }
 

@@ -27,12 +27,12 @@ internal func cons(x: StringElement) -> StringContainer -> StringContainer
 
 /// Parses zero or more occurrences of `parser`.
 /// - Note: Returning parser never fails.
-public func many(p: Result<StringElement>.Parser) -> Result<StringContainer>.Parser {
+public func many(parser: Parser<StringElement>.Function) -> Parser<StringContainer>.Function {
     return { input in
         var result = StringContainer()
         var remainder = input
         while true {
-            switch parse(p, remainder) {
+            switch parser(remainder) {
             case .Done(let input, let out):
                 result.append(out)
                 remainder = input
@@ -41,21 +41,21 @@ public func many(p: Result<StringElement>.Parser) -> Result<StringContainer>.Par
         }
     }
 }
-//public func many(parser: Result<StringElement>.Parser) -> Result<StringContainer>.Parser {
+//public func many(parser: Parser<StringElement>.Function) -> Parser<StringContainer>.Function {
 //    return many1(parser) <|> { pure(StringContainer()) }
 //}
 //
 /// Parses one or more occurrences of `parser`.
-public func many1(parser: Result<StringElement>.Parser) -> Result<StringContainer>.Parser {
+public func many1(parser: Parser<StringElement>.Function) -> Parser<StringContainer>.Function {
     return cons <^> parser <*> { many(parser) }
 }
 
 /// Parses one or more occurrences of `parser` until `end` succeeds,
 /// and returns the list of values returned by `parser`.
 public func manyTill<Out>(
-    parser: Result<StringElement>.Parser,
-    _ end: Result<Out>.Parser
-    ) -> Result<StringContainer>.Parser
+    parser: Parser<StringElement>.Function,
+    _ end: Parser<Out>.Function
+    ) -> Parser<StringContainer>.Function
 {
     return fix { recur in {
         (end *> { pure(StringContainer()) }) <|> { (cons <^> parser <*> { recur() }) }
@@ -65,18 +65,18 @@ public func manyTill<Out>(
 /// Separates zero or more occurrences of `parser` using separator `separator`.
 /// - Note: Returning parser never fails.
 public func sepBy(
-    parser: Result<StringElement>.Parser,
-    _ separator: Result<StringElement>.Parser
-    ) -> Result<StringContainer>.Parser
+    parser: Parser<StringElement>.Function,
+    _ separator: Parser<StringElement>.Function
+    ) -> Parser<StringContainer>.Function
 {
     return sepBy1(parser, separator) <|> { pure(StringContainer()) }
 }
 
 /// Separates one or more occurrences of `parser` using separator `separator`.
 public func sepBy1(
-    parser: Result<StringElement>.Parser,
-    _ separator: Result<StringElement>.Parser
-    ) -> Result<StringContainer>.Parser
+    parser: Parser<StringElement>.Function,
+    _ separator: Parser<StringElement>.Function
+    ) -> Parser<StringContainer>.Function
 {
     return cons <^> parser <*> { many(separator *> { parser }) }
 }
@@ -84,8 +84,8 @@ public func sepBy1(
 /// Parses `n` occurrences of `parser`.
 public func count(
     n: Int,
-    _ parser: Result<StringElement>.Parser
-    ) -> Result<StringContainer>.Parser
+    _ parser: Parser<StringElement>.Function
+    ) -> Parser<StringContainer>.Function
 {
     guard n > 0 else { return pure(StringContainer()) }
 

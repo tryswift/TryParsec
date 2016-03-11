@@ -1,4 +1,4 @@
-import TryParsec
+import TryParsecExperiment
 import Quick
 import Nimble
 

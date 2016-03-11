@@ -1,27 +1,36 @@
-import Foundation
+import Result
 
 /// Parses simple arithmetic expression.
 /// Currently supports: +, -, *, /, (, ), naturalNumber.
-public func parseArithmetic(str: String) -> Int? {
+public func parseArithmetic(str: String) -> Result<Int, ParseError>
+{
     return parseOnly(_expr() <* { endOfInput() }, str.unicodeScalars)
 }
 
-private func _symbol(str: StringContainer) -> Result<StringContainer>.Parser {
+private func _symbol(str: StringContainer) -> Parser<StringContainer>.Function
+{
     return skipSpaces *> { string(str) } <* { skipSpaces }
 }
 
-private func _natural() -> Result<Int>.Parser {
+private func _natural() -> Parser<Int>.Function
+{
     return skipSpaces *> { many1(digit) } <* { skipSpaces } <&> { Int(String($0))! }
 }
 
-private func _expr() -> Result<Int>.Parser {
+internal let expr = _expr()
+private func _expr() -> Parser<Int>.Function
+{
     return chainl1(_term(), _symbol("+") *> { pure(+) } <|> { _symbol("-") *> { pure(-) }})
 }
 
-private func _term() -> Result<Int>.Parser {
+internal let term = _term()
+private func _term() -> Parser<Int>.Function
+{
     return chainl1(_factor(), _symbol("*") *> { pure(*) } <|> { _symbol("/") *> { pure(/) }})
 }
 
-private func _factor() -> Result<Int>.Parser {
+internal let factor = _factor()
+private func _factor() -> Parser<Int>.Function
+{
     return (_symbol("(") *> { _expr() } <* { _symbol(")") }) <|> { _natural() }
 }

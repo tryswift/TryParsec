@@ -1,4 +1,4 @@
-@testable import TryParsec
+@testable import TryParsecExperiment
 import Result
 import Quick
 import Nimble

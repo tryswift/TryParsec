@@ -1,4 +1,4 @@
-import TryParsec
+import TryParsecExperiment
 import Quick
 import Nimble
 
@@ -8,7 +8,7 @@ class CombinatorSpec: QuickSpec
     {
         describe("many") {
 
-            let p: Parser<USV, USV> = many(digit)
+            let p: Parser<StringContainer>.Function = many(digit)
 
             it("succeeds") {
                 let r = parse(p, "123abc")._done
@@ -32,7 +32,7 @@ class CombinatorSpec: QuickSpec
 
         describe("many1") {
 
-            let p: Parser<USV, USV> = many1(digit)
+            let p: Parser<StringContainer>.Function = many1(digit)
 
             it("succeeds") {
                 let r = parse(p, "123abc")._done
@@ -58,7 +58,7 @@ class CombinatorSpec: QuickSpec
 
         describe("manyTill") {
 
-            let p: Parser<USV, USV> = manyTill(any, string("="))
+            let p: Parser<StringContainer>.Function = manyTill(any, string("="))
 
             it("succeeds") {
                 let r = parse(p, "123=abc")._done
@@ -84,7 +84,7 @@ class CombinatorSpec: QuickSpec
 
         describe("skipMany") {
 
-            let p: Parser<USV, ()> = skipMany(digit)
+            let p: Parser<()>.Function = skipMany(digit)
 
             it("succeeds") {
                 let r = parse(p, "123abc")._done
@@ -108,7 +108,7 @@ class CombinatorSpec: QuickSpec
 
         describe("skipMany1") {
 
-            let p: Parser<USV, ()> = skipMany1(digit)
+            let p: Parser<()>.Function = skipMany1(digit)
 
             it("succeeds") {
                 let r = parse(p, "123abc")._done
@@ -134,7 +134,7 @@ class CombinatorSpec: QuickSpec
 
         describe("sepBy") {
 
-            let p: Parser<USV, [UnicodeScalar]> = sepBy(digit, char(","))
+            let p: Parser<[StringElement]>.Function = sepBy(digit, char(","))
 
             it("succeeds") {
                 let r = parse(p, "1,2,3")._done
@@ -164,7 +164,7 @@ class CombinatorSpec: QuickSpec
 
         describe("sepBy1") {
 
-            let p: Parser<USV, [UnicodeScalar]> = sepBy1(digit, char(","))
+            let p: Parser<[StringElement]>.Function = sepBy1(digit, char(","))
 
             it("succeeds") {
                 let r = parse(p, "1,2,3")._done
@@ -196,7 +196,7 @@ class CombinatorSpec: QuickSpec
 
         describe("sepEndBy") {
 
-            let p: Parser<USV, [UnicodeScalar]> = sepEndBy(digit, char(","))
+            let p: Parser<[StringElement]>.Function = sepEndBy(digit, char(","))
 
             it("succeeds") {
                 let r = parse(p, "1,2,3")._done
@@ -226,7 +226,7 @@ class CombinatorSpec: QuickSpec
 
         describe("sepEndBy1") {
 
-            let p: Parser<USV, [UnicodeScalar]> = sepEndBy1(digit, char(","))
+            let p: Parser<[StringElement]>.Function = sepEndBy1(digit, char(","))
 
             it("succeeds") {
                 let r = parse(p, "1,2,3")._done
@@ -258,7 +258,7 @@ class CombinatorSpec: QuickSpec
 
         describe("count") {
 
-            let p: Parser<USV, [USV]> = count(3, string("123"))
+            let p: Parser<[StringContainer]>.Function = count(3, string("123"))
 
             it("succeeds") {
                 let r = parse(p, "123123123123")._done
@@ -284,7 +284,7 @@ class CombinatorSpec: QuickSpec
 
         describe("chainl") {
 
-            let p: Parser<USV, Double> = chainl(number, char("-") *> pure(-), 999)
+            let p: Parser<Double>.Function = chainl(number, char("-") *> { pure(-) }, 999)
 
             it("succeeds (left-association)") {
                 let r = parse(p, "1-2-3")._done
@@ -307,7 +307,7 @@ class CombinatorSpec: QuickSpec
 
         describe("chainl1") {
 
-            let p: Parser<USV, Double> = chainl1(number, char("-") *> pure(-))
+            let p: Parser<Double>.Function = chainl1(number, char("-") *> { pure(-) })
 
             it("succeeds (left-association)") {
                 let r = parse(p, "1-2-3")._done
@@ -333,7 +333,7 @@ class CombinatorSpec: QuickSpec
 
         describe("chainr") {
 
-            let p: Parser<USV, Double> = chainr(number, char("-") *> pure(-), 999)
+            let p: Parser<Double>.Function = chainr(number, char("-") *> { pure(-) }, 999)
 
             it("succeeds (right-association)") {
                 let r = parse(p, "1-2-3")._done
@@ -356,7 +356,7 @@ class CombinatorSpec: QuickSpec
 
         describe("chainr1") {
 
-            let p: Parser<USV, Double> = chainr1(number, char("-") *> pure(-))
+            let p: Parser<Double>.Function = chainr1(number, char("-") *> { pure(-) })
 
             it("succeeds (right-association)") {
                 let r = parse(p, "1-2-3")._done
@@ -382,7 +382,7 @@ class CombinatorSpec: QuickSpec
 
         describe("lookAhead") {
 
-            let p: Parser<USV, UnicodeScalar> = lookAhead(any)
+            let p: Parser<StringElement>.Function = lookAhead(any)
 
             it("succeeds") {
                 let r = parse(p, "abc")._done

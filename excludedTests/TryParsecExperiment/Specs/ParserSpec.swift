@@ -1,4 +1,4 @@
-import TryParsec
+import TryParsecExperiment
 import Quick
 import Nimble
 
@@ -13,14 +13,14 @@ class ParserSpec: QuickSpec
             describe("`<^>` (fmap)") {
 
                 it("`f <^> p` succeeds when `p` succeeds") {
-                    let p: Parser<String, Int> = { $0 + 1 } <^> pure(1)
+                    let p: Parser<Int>.Function = { $0 + 1 } <^> pure(1)
                     let r = parse(p, "hello")._done
                     expect(r?.input) == "hello"
                     expect(r?.output) == 2
                 }
 
                 it("`f <^> p` fails when `p` fails") {
-                    let p: Parser<String, Int> = { $0 + 1 } <^> fail("oops")
+                    let p: Parser<Int>.Function = { $0 + 1 } <^> fail("oops")
                     let r = parse(p, "hello")._fail
                     expect(r?.input) == "hello"
                     expect(r?.contexts) == []
@@ -32,14 +32,14 @@ class ParserSpec: QuickSpec
             describe("`<&>` (flip fmap)") {
 
                 it("`p <&> f` succeeds when `p` succeeds") {
-                    let p: Parser<String, Int> = pure(1) <&> { $0 + 1 }
+                    let p: Parser<Int>.Function = pure(1) <&> { $0 + 1 }
                     let r = parse(p, "hello")._done
                     expect(r?.input) == "hello"
                     expect(r?.output) == 2
                 }
 
                 it("`p <&> f` fails when `p` fails") {
-                    let p: Parser<String, Int> = fail("oops") <&> { $0 + 1 }
+                    let p: Parser<Int>.Function = fail("oops") <&> { $0 + 1 }
                     let r = parse(p, "hello")._fail
                     expect(r?.input) == "hello"
                     expect(r?.contexts) == []
@@ -57,14 +57,14 @@ class ParserSpec: QuickSpec
             describe("`<*>` (ap)") {
 
                 it("`f <*> p` succeeds when both `f` and `p` succeed") {
-                    let p: Parser<String, Int> = pure({ $0 + 1 }) <*> pure(1)
+                    let p: Parser<Int>.Function = pure({ $0 + 1 }) <*> { pure(1) }
                     let r = parse(p, "hello")._done
                     expect(r?.input) == "hello"
                     expect(r?.output) == 2
                 }
 
                 it("`f <*> p` fails when `f` succeeds but `p` fails") {
-                    let p: Parser<String, Int> = pure({ $0 + 1 }) <*> fail("oops")
+                    let p: Parser<Int>.Function = pure({ $0 + 1 }) <*> { fail("oops") }
                     let r = parse(p, "hello")._fail
                     expect(r?.input) == "hello"
                     expect(r?.contexts) == []
@@ -72,7 +72,7 @@ class ParserSpec: QuickSpec
                 }
 
                 it("`f <*> p` fails when `f` fails") {
-                    let p: Parser<String, Int> = fail("oops") <*> pure(1)
+                    let p: Parser<Int>.Function = fail("oops") <*> { pure(1) }
                     let r = parse(p, "hello")._fail
                     expect(r?.input) == "hello"
                     expect(r?.contexts) == []
@@ -80,7 +80,7 @@ class ParserSpec: QuickSpec
                 }
 
                 it("`f <^> p1 <*> p2` (applicative style) succeeds when `f`, `p1`, and `p2` succeed") {
-                    let p = { a in { b in (a, b) } } <^> char("h") <*> char("e")
+                    let p = { a in { b in (a, b) } } <^> char("h") <*> { char("e") }
                     let r = parse(p, "hello")._done
                     expect(r?.input) == "llo"
                     expect(r?.output.0) == "h"
@@ -92,14 +92,14 @@ class ParserSpec: QuickSpec
             describe("`*>` (sequence, discarding left)") {
 
                 it("`p *> q` succeeds when both `p` and `q` succeed") {
-                    let p = char("h") *> char("e")
+                    let p = char("h") *> { char("e") }
                     let r = parse(p, "hello")._done
                     expect(r?.input) == "llo"
                     expect(r?.output) == "e"
                 }
 
                 it("`p *> q` fails when `p` succeeds but `q` fails") {
-                    let p = char("h") *> char("x")
+                    let p = char("h") *> { char("x") }
                     let r = parse(p, "hello")._fail
                     expect(r?.input) == "ello"
                     expect(r?.contexts) == []
@@ -107,7 +107,7 @@ class ParserSpec: QuickSpec
                 }
 
                 it("`p *> q` fails when `p` fails") {
-                    let p = char("x") *> char("h")
+                    let p = char("x") *> { char("h") }
                     let r = parse(p, "hello")._fail
                     expect(r?.input) == "hello"
                     expect(r?.contexts) == []
@@ -119,14 +119,14 @@ class ParserSpec: QuickSpec
             describe("`<*` (sequence, discarding right)") {
 
                 it("`p <* q` succeeds when both `p` and `q` succeed") {
-                    let p = char("h") <* char("e")
+                    let p = char("h") <* { char("e") }
                     let r = parse(p, "hello")._done
                     expect(r?.input) == "llo"
                     expect(r?.output) == "h"
                 }
 
                 it("`p <* q` fails when `p` succeeds but `q` fails") {
-                    let p = char("h") <* char("x")
+                    let p = char("h") <* { char("x") }
                     let r = parse(p, "hello")._fail
                     expect(r?.input) == "ello"
                     expect(r?.contexts) == []
@@ -134,7 +134,7 @@ class ParserSpec: QuickSpec
                 }
 
                 it("`p <* q` fails when `p` fails") {
-                    let p = char("x") <* char("h")
+                    let p = char("x") <* { char("h") }
                     let r = parse(p, "hello")._fail
                     expect(r?.input) == "hello"
                     expect(r?.contexts) == []
@@ -152,28 +152,28 @@ class ParserSpec: QuickSpec
             describe("`<|>` (choice, alternation)") {
 
                 it("`p <|> q` succeeds when both `p` and `q` succeed") {
-                    let p = string("he") <|> string("hell")
+                    let p = string("he") <|> { string("hell") }
                     let r = parse(p, "hello")._done
                     expect(r?.input) == "llo"
                     expect(r?.output) == "he"
                 }
 
                 it("`p <|> q` succeeds when `p` succeeds but `q` fails") {
-                    let p = string("hell") <|> string("x")
+                    let p = string("hell") <|> { string("x") }
                     let r = parse(p, "hello")._done
                     expect(r?.input) == "o"
                     expect(r?.output) == "hell"
                 }
 
                 it("`p <|> q` succeeds when `p` fails but `q` succeeds") {
-                    let p = string("x") <|> string("hell")
+                    let p = string("x") <|> { string("hell") }
                     let r = parse(p, "hello")._done
                     expect(r?.input) == "o"
                     expect(r?.output) == "hell"
                 }
 
                 it("`p <|> q` fails when both `p` and `q` fail") {
-                    let p = string("x") <|> string("y")
+                    let p = string("x") <|> { string("y") }
                     let r = parse(p, "hello")._fail
                     expect(r?.input) == "hello"
                     expect(r?.contexts) == []
@@ -198,7 +198,7 @@ class ParserSpec: QuickSpec
                 }
 
                 it("`p >>- f` fails when `p` succeeds but `f()` fails") {
-                    let p: Parser<USV, USV> = string("he") >>- { _ in fail("oops") }
+                    let p: Parser<StringContainer>.Function = string("he") >>- { _ in fail("oops") }
                     let r = parse(p, "hello")._fail
                     expect(r?.input) == "llo"
                     expect(r?.contexts) == []
@@ -206,7 +206,7 @@ class ParserSpec: QuickSpec
                 }
 
                 it("`p >>- f` fails when `p` fails") {
-                    let p: Parser<USV, USV> = string("x") >>- { _ in pure("I made it!!!") }
+                    let p: Parser<StringContainer>.Function = string("x") >>- { _ in pure("I made it!!!") }
                     let r = parse(p, "hello")._fail
                     expect(r?.input) == "hello"
                     expect(r?.contexts) == []
@@ -221,7 +221,7 @@ class ParserSpec: QuickSpec
 
         describe("peek") {
 
-            let p: Parser<USV, UnicodeScalar> = peek()
+            let p: Parser<StringElement>.Function = peek()
 
             it("succeeds") {
                 let r = parse(p, "abc")._done
@@ -240,7 +240,7 @@ class ParserSpec: QuickSpec
 
         describe("endOfInput") {
 
-            let p: Parser<USV, ()> = endOfInput()
+            let p: Parser<()>.Function = endOfInput()
 
             it("succeeds") {
                 let r = parse(p, "")._done

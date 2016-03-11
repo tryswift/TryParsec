@@ -1,17 +1,17 @@
 /// Parses zero or one occurrence of `parser`.
 /// - SeeAlso: Haskell Parsec's `optionMaybe`.
-public func zeroOrOne<Out>(parser: Result<Out>.Parser) -> Result<Out?>.Parser {
+public func zeroOrOne<Out>(parser: Parser<Out>.Function) -> Parser<Out?>.Function {
     return parser <&> Optional<Out>.init // <|> pure(Optional<Out>.None)
 }
 
 /// Parses zero or more occurrences of `parser`.
 /// - Note: Returning parser never fails.
-public func many<Outs: RangeReplaceableCollectionType>(p: Result<Outs.Generator.Element>.Parser) -> Result<Outs>.Parser {
+public func many<Outs: RangeReplaceableCollectionType>(parser: Parser<Outs.Generator.Element>.Function) -> Parser<Outs>.Function {
     return { input in
         var result = Outs()
         var remainder = input
         while true {
-            switch parse(p, remainder) {
+            switch parser(remainder) {
             case .Done(let input, let out):
                 result.append(out)
                 remainder = input
@@ -20,21 +20,21 @@ public func many<Outs: RangeReplaceableCollectionType>(p: Result<Outs.Generator.
         }
     }
 }
-//public func many<Outs: RangeReplaceableCollectionType>(parser: Result<Outs.Generator.Element>.Parser) -> Result<Outs>.Parser {
 //    return many1(parser) <|> { pure(Outs()) }
+//public func many<Outs: RangeReplaceableCollectionType>(parser: Parser<Outs.Generator.Element>.Function) -> Parser<Outs>.Function {
 //}
 //
 /// Parses one or more occurrences of `parser`.
-public func many1<Outs: RangeReplaceableCollectionType>(parser: Result<Outs.Generator.Element>.Parser) -> Result<Outs>.Parser {
+public func many1<Outs: RangeReplaceableCollectionType>(parser: Parser<Outs.Generator.Element>.Function) -> Parser<Outs>.Function {
     return cons <^> parser <*> { many(parser) }
 }
 
 /// Parses one or more occurrences of `parser` until `end` succeeds,
 /// and returns the list of values returned by `parser`.
 public func manyTill<Out, Outs: RangeReplaceableCollectionType>(
-    parser: Result<Outs.Generator.Element>.Parser,
-    _ end: Result<Out>.Parser
-    ) -> Result<Outs>.Parser
+    parser: Parser<Outs.Generator.Element>.Function,
+    _ end: Parser<Out>.Function
+    ) -> Parser<Outs>.Function
 {
     return fix { recur in {
         (end *> { pure(Outs()) }) <|> { (cons <^> parser <*> { recur() }) }
@@ -43,30 +43,30 @@ public func manyTill<Out, Outs: RangeReplaceableCollectionType>(
 
 /// Parses zero or more occurrences of `parser`.
 /// - Note: Returning parser never fails.
-public func skipMany<Out>(parser: Result<Out>.Parser) -> Result<()>.Parser {
+public func skipMany<Out>(parser: Parser<Out>.Function) -> Parser<()>.Function {
     return skipMany1(parser) <|> { pure(()) }
 }
 
 /// Parses one or more occurrences of `parser`.
-public func skipMany1<Out>(parser: Result<Out>.Parser) -> Result<()>.Parser {
+public func skipMany1<Out>(parser: Parser<Out>.Function) -> Parser<()>.Function {
     return parser *> { skipMany(parser) }
 }
 
 /// Separates zero or more occurrences of `parser` using separator `separator`.
 /// - Note: Returning parser never fails.
 public func sepBy<Outs: RangeReplaceableCollectionType, Sep>(
-    parser: Result<Outs.Generator.Element>.Parser,
-    _ separator: Result<Sep>.Parser
-    ) -> Result<Outs>.Parser
+    parser: Parser<Outs.Generator.Element>.Function,
+    _ separator: Parser<Sep>.Function
+    ) -> Parser<Outs>.Function
 {
     return sepBy1(parser, separator) <|> { pure(Outs()) }
 }
 
 /// Separates one or more occurrences of `parser` using separator `separator`.
 public func sepBy1<Outs: RangeReplaceableCollectionType, Sep>(
-    parser: Result<Outs.Generator.Element>.Parser,
-    _ separator: Result<Sep>.Parser
-    ) -> Result<Outs>.Parser
+    parser: Parser<Outs.Generator.Element>.Function,
+    _ separator: Parser<Sep>.Function
+    ) -> Parser<Outs>.Function
 {
     return cons <^> parser <*> { many(separator *> { parser }) }
 }
@@ -74,18 +74,18 @@ public func sepBy1<Outs: RangeReplaceableCollectionType, Sep>(
 /// Separates zero or more occurrences of `parser` using optionally-ended separator `separator`.
 /// - Note: Returning parser never fails.
 public func sepEndBy<Outs: RangeReplaceableCollectionType, Sep>(
-    parser: Result<Outs.Generator.Element>.Parser,
-    _ separator: Result<Sep>.Parser
-    ) -> Result<Outs>.Parser
+    parser: Parser<Outs.Generator.Element>.Function,
+    _ separator: Parser<Sep>.Function
+    ) -> Parser<Outs>.Function
 {
     return sepEndBy1(parser, separator) <|> { pure(Outs()) }
 }
 
 /// Separates one or more occurrences of `parser` using optionally-ended separator `separator`.
 public func sepEndBy1<Outs: RangeReplaceableCollectionType, Sep>(
-    parser: Result<Outs.Generator.Element>.Parser,
-    _ separator: Result<Sep>.Parser
-    ) -> Result<Outs>.Parser
+    parser: Parser<Outs.Generator.Element>.Function,
+    _ separator: Parser<Sep>.Function
+    ) -> Parser<Outs>.Function
 {
     return parser >>- { x in
         ((separator *> { sepEndBy(parser, separator) }) >>- { xs in
@@ -97,8 +97,8 @@ public func sepEndBy1<Outs: RangeReplaceableCollectionType, Sep>(
 /// Parses `n` occurrences of `parser`.
 public func count<Outs: RangeReplaceableCollectionType>(
     n: Int,
-    _ parser: Result<Outs.Generator.Element>.Parser
-    ) -> Result<Outs>.Parser
+    _ parser: Parser<Outs.Generator.Element>.Function
+    ) -> Parser<Outs>.Function
 {
     guard n > 0 else { return pure(Outs()) }
 
@@ -114,10 +114,10 @@ public func count<Outs: RangeReplaceableCollectionType>(
 /// - Note: Returning parser never fails.
 ///
 public func chainl<Out>(
-    p: Result<Out>.Parser,
-    _ op: Result<(Out, Out) -> Out>.Parser,
+    p: Parser<Out>.Function,
+    _ op: Parser<(Out, Out) -> Out>.Function,
     _ x: Out
-    ) -> Result<Out>.Parser
+    ) -> Parser<Out>.Function
 {
     return chainl1(p, op) <|> { pure(x) }
 }
@@ -145,9 +145,9 @@ public func chainl<Out>(
 /// `RangeReplaceableCollectionType` first and then `reduce`.
 ///
 public func chainl1<Out>(
-    p: Result<Out>.Parser,
-    _ op: Result<(Out, Out) -> Out>.Parser
-    ) -> Result<Out>.Parser
+    p: Parser<Out>.Function,
+    _ op: Parser<(Out, Out) -> Out>.Function
+    ) -> Parser<Out>.Function
 {
     return p >>- { x in
         fix { recur in { x in
@@ -169,10 +169,10 @@ public func chainl1<Out>(
 /// - Note: Returning parser never fails.
 ///
 public func chainr<Out>(
-    p: Result<Out>.Parser,
-    _ op: Result<(Out, Out) -> Out>.Parser,
+    p: Parser<Out>.Function,
+    _ op: Parser<(Out, Out) -> Out>.Function,
     _ x: Out
-    ) -> Result<Out>.Parser
+    ) -> Parser<Out>.Function
 {
     return chainr1(p, op) <|> { pure(x) }
 }
@@ -180,9 +180,9 @@ public func chainr<Out>(
 /// Parses one or more occurrences of `p`, separated by `op`
 /// which right-associates multiple outputs from `p` by applying its binary operation.
 public func chainr1<Out>(
-    p: Result<Out>.Parser,
-    _ op: Result<(Out, Out) -> Out>.Parser
-    ) -> Result<Out>.Parser
+    p: Parser<Out>.Function,
+    _ op: Parser<(Out, Out) -> Out>.Function
+    ) -> Parser<Out>.Function
 {
     return fix { recur in {
         p >>- { x in
@@ -196,7 +196,7 @@ public func chainr1<Out>(
 }
 
 /// Applies `parser` without consuming any input.
-public func lookAhead<Out>(parser: Result<Out>.Parser) -> Result<Out>.Parser
+public func lookAhead<Out>(parser: Parser<Out>.Function) -> Parser<Out>.Function
 {
     return { input in
         let reply = parser(input)

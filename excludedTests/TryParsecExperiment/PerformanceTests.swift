@@ -7,7 +7,7 @@ private let _loops = 1000
 class ParsecTests: XCTestCase {
     
     func testExample() {
-        let r = parseArithmetic("1")
+        let r = parseArithmetic("1").value!
         XCTAssertEqual(r, 1)
     }
 
