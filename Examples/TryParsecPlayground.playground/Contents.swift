@@ -61,11 +61,9 @@ struct Model: FromJSON, ToJSON
 
     static func fromJSON(json: JSON) -> Result<Model, JSON.ParseError>
     {
-        return fromJSONObject(json) {
-            curry(self.init)
-                <^> $0 !! "string"
-                <*> $0 !? "array"
-        }
+        return curry(self.init)
+            <^> json !! "string"
+            <*> json !? "array"
     }
 
     static func toJSON(model: Model) -> JSON

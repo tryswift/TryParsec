@@ -21,34 +21,32 @@ struct _Model: FromJSON, ToJSON
 
     static func fromJSON(json: JSON) -> Result<_Model, JSON.ParseError>
     {
-        return fromJSONObject(json) {
-            //
-            // NOTE:
-            // Too long applicative style writing causes compiler error:
-            // "Expression was too complex to be solved in reasonable time",
-            // so break them into smaller sub-expressions.
-            //
-            // See also: https://github.com/thoughtbot/Argo/issues/5
-            //
-            let r1 = curry(self.init)
-                <^> $0 !! "string"
-                <*> $0 !! "int"
-                <*> $0 !! "double"
-                <*> $0 !! "bool"
-                <*> $0 !! "null"
+        //
+        // NOTE:
+        // Too long applicative style writing causes compiler error:
+        // "Expression was too complex to be solved in reasonable time",
+        // so break them into smaller sub-expressions.
+        //
+        // See also: https://github.com/thoughtbot/Argo/issues/5
+        //
+        let r1 = curry(self.init)
+            <^> json !! "string"
+            <*> json !! "int"
+            <*> json !! "double"
+            <*> json !! "bool"
+            <*> json !! "null"
 
-            let r2 = r1
-                <*> $0 !! "array"
-                <*> $0 !! "dict"
-//                <*> $0 !! "arrayOfArray"
-//                <*> $0 !! "dictOfDict"
+        let r2 = r1
+            <*> json !! "array"
+            <*> json !! "dict"
+//                <*> json !! "arrayOfArray"
+//                <*> json !! "dictOfDict"
 
-            let r3 = r2
-                <*> $0 !! "subModel"
-                <*> $0 !? "dummy"
+        let r3 = r2
+            <*> json !! "subModel"
+            <*> json !? "dummy"
 
-            return r3
-        }
+        return r3
     }
 
     static func toJSON(model: _Model) -> JSON
@@ -76,10 +74,8 @@ struct _SubModel: FromJSON, ToJSON
 
     static func fromJSON(json: JSON) -> Result<_SubModel, JSON.ParseError>
     {
-        return fromJSONObject(json) {
-            curry(self.init)
-                <^> $0 !! "string"
-        }
+        return curry(self.init)
+            <^> json !! "string"
     }
 
     static func toJSON(obj: _SubModel) -> JSON
