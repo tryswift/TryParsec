@@ -12,7 +12,7 @@ script:
   - xcodebuild -workspace 'TryParsec.xcworkspace' -scheme 'TryParsec' -destination 'platform=iOS Simulator,name=iPhone 6s' test | xcpretty
   - xcodebuild -workspace 'TryParsec.xcworkspace' -scheme 'TryParsec' -destination 'platform=tvOS Simulator,name=Apple TV 1080p' test | xcpretty
   - xcodebuild -workspace 'TryParsec.xcworkspace' -scheme 'TryParsec' -destination 'platform=watchOS Simulator,name=Apple Watch - 38mm' build | xcpretty
-  - pod lib lint
+  - pod lib lint --allow-warnings
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
