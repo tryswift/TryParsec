@@ -14,7 +14,7 @@ extension XCTestCase
         super.tearDown()
     }
 
-    class func loadString(resourceName: String, _ extensionName: String, filename: String = __FILE__, functionName: String = __FUNCTION__, line: Int = __LINE__) -> String
+    class func loadString(resourceName: String, _ extensionName: String, filename: String = #file, functionName: String = #function, line: Int = #line) -> String
     {
         let jsonString = NSBundle(forClass: self)
             .URLForResource("TestAssets/\(resourceName)", withExtension: extensionName)
