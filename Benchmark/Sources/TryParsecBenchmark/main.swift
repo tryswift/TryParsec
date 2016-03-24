@@ -27,7 +27,7 @@ func startBenchmark<T>(f: String -> T, _ filename: String, _ fileExt: String)
     print(diffTime)
 }
 
-func loadString(resourceName: String, _ extensionName: String, filename: String = __FILE__, functionName: String = __FUNCTION__, line: Int = __LINE__) -> String
+func loadString(resourceName: String, _ extensionName: String, filename: String = #file, functionName: String = #function, line: Int = #line) -> String
 {
 #if SWIFT_PACKAGE
     let resourceDir = "../../../TestAssets"
