@@ -55,6 +55,21 @@ internal func splitAt<C: CollectionType>(count: C.Index.Distance) -> C -> (C.Sub
     }
 }
 
+internal func flip<A, B, C>(f: A -> B -> C) -> B -> A -> C
+{
+    return { b in { a in f(a)(b) } }
+}
+
+internal func <<< <A, B, C>(f: B -> C, g: A -> B) -> A -> C
+{
+    return { f(g($0)) }
+}
+
+internal func >>> <A, B, C>(f: A -> B, g: B -> C) -> A -> C
+{
+    return { g(f($0)) }
+}
+
 /// Fixed-point combinator.
 internal func fix<T, U>(f: (T -> U) -> T -> U) -> T -> U
 {

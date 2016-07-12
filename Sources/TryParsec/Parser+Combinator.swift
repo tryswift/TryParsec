@@ -199,3 +199,9 @@ public func lookAhead<In, Out>(p: Parser<In, Out>) -> Parser<In, Out>
         }
     }
 }
+
+/// Folds `parsers` using Alternative's `<|>`.
+public func choice<In, Out, S: SequenceType where S.Generator.Element == Parser<In, Out>>(parsers: S) -> Parser<In, Out>
+{
+    return parsers.reduce(empty(), combine: { $0 <|> $1 })
+}

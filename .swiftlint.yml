@@ -24,6 +24,7 @@ opt_in_rules:
 included:
  - Sources
  - Tests
+ - excludedTests
  - Benchmark
 
 excluded:
