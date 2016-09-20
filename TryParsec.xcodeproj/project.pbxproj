@@ -13,6 +13,7 @@
 		1F110F061B8C165B00798BA0 /* Parser+Combinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F110F051B8C165B00798BA0 /* Parser+Combinator.swift */; };
 		1F110F0A1B8C18E100798BA0 /* Parser+Arithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F110F091B8C18E100798BA0 /* Parser+Arithmetic.swift */; };
 		1F258C941C2F09FA00D9C0E2 /* Result+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F258C931C2F09FA00D9C0E2 /* Result+Helper.swift */; };
+		1F2A1A7D1D327A340012B5C3 /* PermutationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2A1A7B1D32797C0012B5C3 /* PermutationSpec.swift */; };
 		1F39576E1BD54767000BD9A0 /* Operators+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F39576D1BD54767000BD9A0 /* Operators+JSON.swift */; };
 		1F4383351BBAFEE700FF330A /* Parser+UnicodeScalarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4383341BBAFEE700FF330A /* Parser+UnicodeScalarView.swift */; };
 		1F57FCA51C45E24200484EBD /* Dictionary+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F57FCA41C45E24200484EBD /* Dictionary+Helper.swift */; };
@@ -55,6 +56,8 @@
 		1FC183011C6AC19B00FB1EC9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC182601C6AC19A00FB1EC9 /* main.swift */; };
 		1FC183B11C6AC23A00FB1EC9 /* TryParsec.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FE8E41F1B896E9100E1F2D0 /* TryParsec.framework */; };
 		1FC183B31C6AC24100FB1EC9 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC183B21C6AC24100FB1EC9 /* Result.framework */; };
+		1FCCF9101D309CC800B6B86E /* Permutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FCCF90F1D309CC800B6B86E /* Permutation.swift */; };
+		1FCCF9121D309D0400B6B86E /* Operators+Permutation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FCCF9111D309D0400B6B86E /* Operators+Permutation.swift */; };
 		1FD6385A1C378EAB00941439 /* RangeReplaceableCollectionType+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD638591C378EAB00941439 /* RangeReplaceableCollectionType+Helper.swift */; };
 		1FD638601C37A34500941439 /* UnicodeScalarView+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD6385F1C37A34500941439 /* UnicodeScalarView+Helper.swift */; };
 		1FE03AF01BB7BEF300D16C55 /* Parser+XML.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE03AEF1BB7BEF300D16C55 /* Parser+XML.swift */; };
@@ -101,6 +104,7 @@
 		1F110F051B8C165B00798BA0 /* Parser+Combinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Parser+Combinator.swift"; sourceTree = "<group>"; };
 		1F110F091B8C18E100798BA0 /* Parser+Arithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Parser+Arithmetic.swift"; sourceTree = "<group>"; };
 		1F258C931C2F09FA00D9C0E2 /* Result+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Result+Helper.swift"; sourceTree = "<group>"; };
+		1F2A1A7B1D32797C0012B5C3 /* PermutationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermutationSpec.swift; sourceTree = "<group>"; };
 		1F39576D1BD54767000BD9A0 /* Operators+JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Operators+JSON.swift"; sourceTree = "<group>"; };
 		1F4383341BBAFEE700FF330A /* Parser+UnicodeScalarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Parser+UnicodeScalarView.swift"; sourceTree = "<group>"; };
 		1F57FCA41C45E24200484EBD /* Dictionary+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Helper.swift"; sourceTree = "<group>"; };
@@ -132,6 +136,8 @@
 		1FC182431C6AC14200FB1EC9 /* TryParsecBenchmark.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TryParsecBenchmark.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC182601C6AC19A00FB1EC9 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = main.swift; path = TryParsecBenchmark/main.swift; sourceTree = "<group>"; };
 		1FC183B21C6AC24100FB1EC9 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = "../../Library/Developer/Xcode/DerivedData/TryParsec-bergsxxpazqchkerucnpexyejxub/Build/Products/Release/Result.framework"; sourceTree = "<group>"; };
+		1FCCF90F1D309CC800B6B86E /* Permutation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permutation.swift; sourceTree = "<group>"; };
+		1FCCF9111D309D0400B6B86E /* Operators+Permutation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Operators+Permutation.swift"; sourceTree = "<group>"; };
 		1FD638591C378EAB00941439 /* RangeReplaceableCollectionType+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RangeReplaceableCollectionType+Helper.swift"; sourceTree = "<group>"; };
 		1FD6385F1C37A34500941439 /* UnicodeScalarView+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UnicodeScalarView+Helper.swift"; sourceTree = "<group>"; };
 		1FDF639A1C417DA3004AF11D /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
@@ -244,6 +250,7 @@
 				1FA466911C67F45A0089C8D9 /* ParserSpec.swift */,
 				1FA4668D1C67F45A0089C8D9 /* CombinatorSpec.swift */,
 				1FA466921C67F45A0089C8D9 /* UnicodeScalarViewSpec.swift */,
+				1F2A1A7B1D32797C0012B5C3 /* PermutationSpec.swift */,
 				1FA4668C1C67F45A0089C8D9 /* ArithmeticSpec.swift */,
 				1FA4668E1C67F45A0089C8D9 /* CSVSpec.swift */,
 				1FA466931C67F45A0089C8D9 /* XMLSpec.swift */,
@@ -303,6 +310,7 @@
 			isa = PBXGroup;
 			children = (
 				1FE60F5D1B8CA7FF00189CE0 /* Operators.swift */,
+				1FCCF9111D309D0400B6B86E /* Operators+Permutation.swift */,
 				1F258C931C2F09FA00D9C0E2 /* Result+Helper.swift */,
 				1FD6385F1C37A34500941439 /* UnicodeScalarView+Helper.swift */,
 				1FD638591C378EAB00941439 /* RangeReplaceableCollectionType+Helper.swift */,
@@ -366,6 +374,7 @@
 				1F4383341BBAFEE700FF330A /* Parser+UnicodeScalarView.swift */,
 				1F92984B1BC3534A00B68621 /* Reply.swift */,
 				1F9824B21C41372C00D68090 /* ParseError.swift */,
+				1FCCF90F1D309CC800B6B86E /* Permutation.swift */,
 				1FD19BB71B8E41730066895A /* Basis */,
 				1FAAF1611BD2FF0300B26694 /* Arithmetic */,
 				1FAAF15F1BD2FEFA00B26694 /* CSV */,
@@ -634,12 +643,14 @@
 				1FE60F5E1B8CA7FF00189CE0 /* Operators.swift in Sources */,
 				1F92984C1BC3534A00B68621 /* Reply.swift in Sources */,
 				1FAAF1631BD2FF8900B26694 /* FromJSON.swift in Sources */,
+				1FCCF9121D309D0400B6B86E /* Operators+Permutation.swift in Sources */,
 				1F8A4FC21BBB6B1D00BE5CDD /* Parser+JSON.swift in Sources */,
 				1FE21A4D1C48800B00494E64 /* XML.swift in Sources */,
 				1F258C941C2F09FA00D9C0E2 /* Result+Helper.swift in Sources */,
 				1FF2461C1BDCBF0500570D8D /* DoubleType.swift in Sources */,
 				1FD6385A1C378EAB00941439 /* RangeReplaceableCollectionType+Helper.swift in Sources */,
 				1FE03AF01BB7BEF300D16C55 /* Parser+XML.swift in Sources */,
+				1FCCF9101D309CC800B6B86E /* Permutation.swift in Sources */,
 				1F9824B31C41372C00D68090 /* ParseError.swift in Sources */,
 				1F4383351BBAFEE700FF330A /* Parser+UnicodeScalarView.swift in Sources */,
 				1FE21A4B1C487F4300494E64 /* JSON.swift in Sources */,
@@ -658,6 +669,7 @@
 				1F7B76961C68F40F008DC0A1 /* ArithmeticSpec.swift in Sources */,
 				1F7B769D1C68F40F008DC0A1 /* XMLSpec.swift in Sources */,
 				1F7B76991C68F40F008DC0A1 /* HelperSpec.swift in Sources */,
+				1F2A1A7D1D327A340012B5C3 /* PermutationSpec.swift in Sources */,
 				1F7B76981C68F40F008DC0A1 /* CSVSpec.swift in Sources */,
 				1F7B76971C68F40F008DC0A1 /* CombinatorSpec.swift in Sources */,
 				1FA466881C67F3FE0089C8D9 /* TestHelper.swift in Sources */,
