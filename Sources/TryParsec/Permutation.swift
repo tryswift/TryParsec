@@ -1,11 +1,3 @@
-//
-//  Permutation.swift
-//  TryParsec
-//
-//  Created by Yasuhiro Inami on 2016-07-13.
-//  Copyright © 2016 Yasuhiro Inami. All rights reserved.
-//
-
 public struct Permutation<In, Out>
 {
     private let output: Out?
