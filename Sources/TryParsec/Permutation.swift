@@ -17,7 +17,7 @@ public struct Permutation<In, Out>
     }
 }
 
-public struct Branch<In, Out>
+private struct Branch<In, Out>
 {
     private let perm: Permutation<In, Any -> Out>
     private let parser: Parser<In, Any>
