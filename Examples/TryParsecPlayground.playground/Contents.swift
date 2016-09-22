@@ -13,6 +13,7 @@ or, use https://github.com/fastlane/fastlane :
 */
 
 import Cocoa
+import Runes
 import Result
 import Curry  // test-dependency
 import TryParsec
@@ -59,14 +60,14 @@ struct Model: FromJSON, ToJSON
     let string: String
     let array: [Any]?
 
-    static func fromJSON(json: JSON) -> Result<Model, JSON.ParseError>
+    static func fromJSON(_ json: JSON) -> Result<Model, JSON.ParseError>
     {
         return curry(self.init)
             <^> json !! "string"
             <*> json !? "array"
     }
 
-    static func toJSON(model: Model) -> JSON
+    static func toJSON(_ model: Model) -> JSON
     {
         return toJSONObject([
             "string" ~ model.string,

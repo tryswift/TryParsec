@@ -3,10 +3,10 @@ import Result
 // MARK: decode
 
 /// Converts JSON string to `FromJSON` value.
-public func decode<FJ: FromJSON>(str: String) -> Result<FJ, JSON.ParseError>
+public func decode<FJ: FromJSON>(_ str: String) -> Result<FJ, JSON.ParseError>
 {
     return parseOnly(json, str.unicodeScalars)
-        .mapError { _ in .InvalidJSONFormat }
+        .mapError { _ in .invalidJSONFormat }
         .flatMap { FJ.fromJSON($0) }
 }
 
@@ -14,25 +14,25 @@ public func decode<FJ: FromJSON>(str: String) -> Result<FJ, JSON.ParseError>
 
 public protocol FromJSON
 {
-    static func fromJSON(json: JSON) -> Result<Self, JSON.ParseError>
+    static func fromJSON(_ json: JSON) -> Result<Self, JSON.ParseError>
 }
 
 extension JSON: FromJSON
 {
-    public static func fromJSON(json: JSON) -> Result<JSON, JSON.ParseError>
+    public static func fromJSON(_ json: JSON) -> Result<JSON, JSON.ParseError>
     {
-        return .Success(json)
+        return .success(json)
     }
 }
 
 extension String: FromJSON
 {
-    public static func fromJSON(json: JSON) -> Result<String, JSON.ParseError>
+    public static func fromJSON(_ json: JSON) -> Result<String, JSON.ParseError>
     {
-        guard case let .String(v) = json else {
-            return typeMismatch(json, expected: "JSON.String")
+        guard case let .string(v) = json else {
+            return typeMismatch(json, expected: "JSON.string")
         }
-        return .Success(v)
+        return .success(v)
     }
 }
 
@@ -40,55 +40,55 @@ extension String: FromJSON
 
 extension Int: FromJSON
 {
-    public static func fromJSON(json: JSON) -> Result<Int, JSON.ParseError>
+    public static func fromJSON(_ json: JSON) -> Result<Int, JSON.ParseError>
     {
-        guard case let .Number(v) = json else {
-            return typeMismatch(json, expected: "JSON.Number")
+        guard case let .number(v) = json else {
+            return typeMismatch(json, expected: "JSON.number")
         }
-        return .Success(Int(v))
+        return .success(Int(v))
     }
 }
 
 extension Float: FromJSON
 {
-    public static func fromJSON(json: JSON) -> Result<Float, JSON.ParseError>
+    public static func fromJSON(_ json: JSON) -> Result<Float, JSON.ParseError>
     {
-        guard case let .Number(v) = json else {
-            return typeMismatch(json, expected: "JSON.Number")
+        guard case let .number(v) = json else {
+            return typeMismatch(json, expected: "JSON.number")
         }
-        return .Success(Float(v))
+        return .success(Float(v))
     }
 }
 
 extension Double: FromJSON
 {
-    public static func fromJSON(json: JSON) -> Result<Double, JSON.ParseError>
+    public static func fromJSON(_ json: JSON) -> Result<Double, JSON.ParseError>
     {
-        guard case let .Number(v) = json else {
-            return typeMismatch(json, expected: "JSON.Number")
+        guard case let .number(v) = json else {
+            return typeMismatch(json, expected: "JSON.number")
         }
-        return .Success(v)
+        return .success(v)
     }
 }
 
 extension Bool: FromJSON
 {
-    public static func fromJSON(json: JSON) -> Result<Bool, JSON.ParseError>
+    public static func fromJSON(_ json: JSON) -> Result<Bool, JSON.ParseError>
     {
-        guard case let .Bool(v) = json else {
-            return typeMismatch(json, expected: "JSON.Bool")
+        guard case let .bool(v) = json else {
+            return typeMismatch(json, expected: "JSON.bool")
         }
-        return .Success(v)
+        return .success(v)
     }
 }
 
 /// - Warning: Nested container is not supported.
 extension Array: FromJSON // where Element: FromJSON
 {
-    public static func fromJSON(json: JSON) -> Result<[Element], JSON.ParseError>
+    public static func fromJSON(_ json: JSON) -> Result<[Element], JSON.ParseError>
     {
-        guard case let .Array(jsons) = json else {
-            return typeMismatch(json, expected: "JSON.Array")
+        guard case let .array(jsons) = json else {
+            return typeMismatch(json, expected: "JSON.array")
         }
 
         var arr = [Element]()
@@ -101,20 +101,20 @@ extension Array: FromJSON // where Element: FromJSON
                 arr.append(elem)
             }
             else {
-                return .Failure(.TypeMismatched(expected: "\(Element.self)", actual: json.description))
+                return .failure(.typeMismatched(expected: "\(Element.self)", actual: json.description))
             }
         }
-        return .Success(arr)
+        return .success(arr)
     }
 }
 
 /// - Warning: Nested container is not supported.
 extension Dictionary: FromJSON // where Key == String, Value: FromJSON
 {
-    public static func fromJSON(json: JSON) -> Result<[Key : Value], JSON.ParseError>
+    public static func fromJSON(_ json: JSON) -> Result<[Key : Value], JSON.ParseError>
     {
-        guard case let .Object(jsons) = json else {
-            return typeMismatch(json, expected: "JSON.Object")
+        guard case let .object(jsons) = json else {
+            return typeMismatch(json, expected: "JSON.object")
         }
 
         var dict = [Key : Value]()
@@ -133,10 +133,10 @@ extension Dictionary: FromJSON // where Key == String, Value: FromJSON
                 dict[key_] = value
             }
             else {
-                return .Failure(.TypeMismatched(expected: "\(Value.self)", actual: json.description))
+                return .failure(.typeMismatched(expected: "\(Value.self)", actual: json.description))
             }
         }
-        return .Success(dict)
+        return .success(dict)
     }
 }
 
@@ -145,15 +145,15 @@ extension Dictionary: FromJSON // where Key == String, Value: FromJSON
 /// Extracts `FromJSON` value for `key` from `json`.
 public func !! <FJ: FromJSON>(json: JSON, key: String) -> Result<FJ, JSON.ParseError>
 {
-    guard case let .Object(dict) = json else {
-        return typeMismatch(json, expected: "JSON.Object")
+    guard case let .object(dict) = json else {
+        return typeMismatch(json, expected: "JSON.object")
     }
 
     if let json = dict[key] {
         return FJ.fromJSON(json)
     }
     else {
-        return .Failure(.KeyNotFound(key))
+        return .failure(.keyNotFound(key))
     }
 }
 
@@ -166,34 +166,34 @@ public func !! <FJ: FromJSON>(json: JSON, key: String) -> Result<FJ, JSON.ParseE
 ///
 public func !! <FJ: FromJSON>(json: JSON, key: String) -> Result<FJ?, JSON.ParseError>
 {
-    guard case let .Object(dict) = json else {
-        return typeMismatch(json, expected: "JSON.Object")
+    guard case let .object(dict) = json else {
+        return typeMismatch(json, expected: "JSON.object")
     }
 
     if let json = dict[key] {
-        if json == JSON.Null {
-            return .Success(nil)
+        if json == JSON.null {
+            return .success(nil)
         }
         else {
             return FJ.fromJSON(json).map { Optional($0) }
         }
     }
     else {
-        return .Failure(.KeyNotFound(key))
+        return .failure(.keyNotFound(key))
     }
 }
 
 /// Optionally extracts `FromJSON` value for `key` from `json`.
 public func !? <FJ: FromJSON>(json: JSON, key: String) -> Result<FJ?, JSON.ParseError>
 {
-    guard case let .Object(dict) = json else {
-        return typeMismatch(json, expected: "JSON.Object")
+    guard case let .object(dict) = json else {
+        return typeMismatch(json, expected: "JSON.object")
     }
 
     if let json = dict[key] {
         return FJ.fromJSON(json).map { Optional($0) }
     }
     else {
-        return .Success(nil)
+        return .success(nil)
     }
 }

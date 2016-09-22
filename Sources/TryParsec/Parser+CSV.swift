@@ -1,3 +1,4 @@
+import Runes
 import Result
 
 //
@@ -6,7 +7,7 @@ import Result
 //
 
 /// Parses _character_-separated values. Default separator is ",".
-public func parseCSV(separator separator: UnicodeScalar = ",", _ str: String) -> Result<[[String]], ParseError>
+public func parseCSV(separator: UnicodeScalar = ",", _ str: String) -> Result<[[String]], ParseError>
 {
     let p = csv(char(separator)) <* endOfInput() <&> { xss in
         xss.map { xs in
@@ -20,13 +21,13 @@ public func parseCSV(separator separator: UnicodeScalar = ",", _ str: String) ->
 // MARK: Private
 
 /// file = record *(CRLF record) [CRLF]
-internal func csv(sep: Parser<String.UnicodeScalarView, UnicodeScalar>) -> Parser<String.UnicodeScalarView, ArraySlice<ArraySlice<String.UnicodeScalarView>>>
+internal func csv(_ sep: Parser<String.UnicodeScalarView, UnicodeScalar>) -> Parser<String.UnicodeScalarView, ArraySlice<ArraySlice<String.UnicodeScalarView>>>
 {
     return sepEndBy1(record(sep), lf <|> crlf)
         <&> { (xss: ArraySlice<ArraySlice<String.UnicodeScalarView>>) in
 
             let (heads, tails) = splitAt(xss.count-1)(xss)
-            if let last = tails.last where tails.count == 1 && last == [ "" ] {
+            if let last = tails.last, tails.count == 1 && last == [ "" ] {
                 return heads
             }
             else {
@@ -36,19 +37,19 @@ internal func csv(sep: Parser<String.UnicodeScalarView, UnicodeScalar>) -> Parse
 }
 
 /// record = field *(COMMA field)
-internal func record(sep: Parser<String.UnicodeScalarView, UnicodeScalar>) -> Parser<String.UnicodeScalarView, ArraySlice<String.UnicodeScalarView>>
+internal func record(_ sep: Parser<String.UnicodeScalarView, UnicodeScalar>) -> Parser<String.UnicodeScalarView, ArraySlice<String.UnicodeScalarView>>
 {
     return sepBy1(field(sep), sep)
 }
 
 /// field = (escaped / non-escaped)
-internal func field(sep: Parser<String.UnicodeScalarView, UnicodeScalar>) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
+internal func field(_ sep: Parser<String.UnicodeScalarView, UnicodeScalar>) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
 {
     return escaped(sep) <|> nonEscaped
 }
 
 /// escaped = DQUOTE *(TEXTDATA / COMMA / CR / LF / 2DQUOTE) DQUOTE
-internal func escaped(sep: Parser<String.UnicodeScalarView, UnicodeScalar>) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
+internal func escaped(_ sep: Parser<String.UnicodeScalarView, UnicodeScalar>) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
 {
     return doubleQuote
         *> many(textData <|> sep <|> cr <|> lf <|> (doubleQuote *> doubleQuote))

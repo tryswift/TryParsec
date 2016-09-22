@@ -10,14 +10,14 @@ class StringSplitPerformanceTests: XCTestCase
     {
         super.setUp()
         for _ in 1...10000 {
-            _testString.appendContentsOf("z")
+            _testString.append("z")
         }
     }
 
     // Comment-Out: `removeFirst` is VERY SLOW
 //    func test_USV_removeFirst()
 //    {
-//        self.measureBlock {
+//        self.measure {
 //            for _ in 1..._numberOfRemovalLoops {
 //                var unicodeScalarView = _testString.unicodeScalars
 //                for _ in 1..._testString.unicodeScalars.count {
@@ -30,11 +30,12 @@ class StringSplitPerformanceTests: XCTestCase
     // 0.010sec (fast)
     func test_USV_subscriptTailRange()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._removalLoops {
                 var unicodeScalarView = _testString.unicodeScalars
                 for _ in 1..._testString.unicodeScalars.count {
-                    unicodeScalarView = unicodeScalarView[unicodeScalarView.startIndex.successor()..<unicodeScalarView.endIndex]
+                    let index1 = unicodeScalarView.index(after: unicodeScalarView.startIndex)
+                    unicodeScalarView = unicodeScalarView[index1..<unicodeScalarView.endIndex]
                 }
             }
         }
@@ -43,11 +44,12 @@ class StringSplitPerformanceTests: XCTestCase
     // 0.010sec (fast)
     func test_USV_suffixFrom_startIndexSuccessor()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._removalLoops {
                 var unicodeScalarView = _testString.unicodeScalars
                 for _ in 1..._testString.unicodeScalars.count {
-                    unicodeScalarView = unicodeScalarView.suffixFrom(unicodeScalarView.startIndex.successor())
+                    let index1 = unicodeScalarView.index(after: unicodeScalarView.startIndex)
+                    unicodeScalarView = unicodeScalarView.suffix(from: index1)
                 }
             }
         }
@@ -56,11 +58,12 @@ class StringSplitPerformanceTests: XCTestCase
     // 0.014sec (`advancedBy(1)` is slower than `successor`)
     func test_USV_suffixFrom_startIndexAdvancedBy1()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._removalLoops {
                 var unicodeScalarView = _testString.unicodeScalars
                 for _ in 1..._testString.unicodeScalars.count {
-                    unicodeScalarView = unicodeScalarView.suffixFrom(unicodeScalarView.startIndex.advancedBy(1))
+                    let index1 = unicodeScalarView.index(unicodeScalarView.startIndex, offsetBy: 1)
+                    unicodeScalarView = unicodeScalarView.suffix(from: index1)
                 }
             }
         }
@@ -69,7 +72,7 @@ class StringSplitPerformanceTests: XCTestCase
     // Comment-Out: `removeFirst` is VERY SLOW
 //    func test_CV_removeFirst()
 //    {
-//        self.measureBlock {
+//        self.measure {
 //            for _ in 1..._numberOfRemoveLoops {
 //                var characterView = _testString.characters
 //                for _ in 1..._testString.characters.count {
@@ -82,11 +85,12 @@ class StringSplitPerformanceTests: XCTestCase
     // 0.068sec
     func test_CV_subscriptTailRange()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._removalLoops {
                 var characterView = _testString.characters
                 for _ in 1..._testString.characters.count {
-                    characterView = characterView[characterView.startIndex.successor()..<characterView.endIndex]
+                    let index1 = characterView.index(after: characterView.startIndex)
+                    characterView = characterView[index1..<characterView.endIndex]
                 }
             }
         }
@@ -95,11 +99,12 @@ class StringSplitPerformanceTests: XCTestCase
     // 0.066sec
     func test_CV_suffixFrom_startIndexSuccessor()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._removalLoops {
                 var characterView = _testString.characters
                 for _ in 1..._testString.characters.count {
-                    characterView = characterView.suffixFrom(characterView.startIndex.successor())
+                    let index1 = characterView.index(after: characterView.startIndex)
+                    characterView = characterView.suffix(from: index1)
                 }
             }
         }
@@ -108,11 +113,12 @@ class StringSplitPerformanceTests: XCTestCase
     // 0.067sec (`advancedBy(1)` is slower than `successor`)
     func test_CV_suffixFrom_startIndexAdvancedBy1()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._removalLoops {
                 var characterView = _testString.characters
                 for _ in 1..._testString.characters.count {
-                    characterView = characterView.suffixFrom(characterView.startIndex.advancedBy(1))
+                    let index1 = characterView.index(characterView.startIndex, offsetBy: 1)
+                    characterView = characterView.suffix(from: index1)
                 }
             }
         }
@@ -121,11 +127,11 @@ class StringSplitPerformanceTests: XCTestCase
     // 0.031sec
     func test_NSString_substringFromIndex()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._removalLoops {
                 var str: NSString = _testString as NSString
                 for _ in 1...(_testString as NSString).length {
-                    str = str.substringFromIndex(1)
+                    str = str.substring(from: 1) as NSString
                 }
             }
         }
@@ -134,11 +140,11 @@ class StringSplitPerformanceTests: XCTestCase
     // 0.015sec
     func test_NSMutableString_deleteCharactersInRange()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._removalLoops {
                 let str: NSMutableString = NSMutableString(string: _testString)
                 for _ in 1...(_testString as NSString).length {
-                    str.deleteCharactersInRange(NSRange(location: 0, length: 1))
+                    str.deleteCharacters(in: NSRange(location: 0, length: 1))
                 }
             }
         }

@@ -1,7 +1,7 @@
-extension RangeReplaceableCollectionType
+extension RangeReplaceableCollection
 {
     /// Missing initializer.
-    public init(_ x: Self.Generator.Element)
+    public init(_ x: Self.Iterator.Element)
     {
         self.init()
         self.append(x)

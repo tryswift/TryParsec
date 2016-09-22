@@ -1,13 +1,14 @@
+import Runes
 import Result
 
 /// Parses simple arithmetic expression.
 /// Currently supports: +, -, *, /, (, ), naturalNumber.
-public func parseArithmetic(str: String) -> Result<Int, ParseError>
+public func parseArithmetic(_ str: String) -> Result<Int, ParseError>
 {
     return parseOnly(expr <* endOfInput(), str.unicodeScalars)
 }
 
-private func _symbol(str: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
+private func _symbol(_ str: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
 {
     return skipSpaces *> string(str) <* skipSpaces
 }

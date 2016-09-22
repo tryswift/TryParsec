@@ -1,4 +1,7 @@
+import Runes
 import Result
+
+infix operator >>- : RunesMonadicPrecedenceLeft // redefine
 
 /// Monadic parser type.
 public struct Parser<In, Out>
@@ -9,9 +12,9 @@ public struct Parser<In, Out>
 //
 //    internal let _parse: (In, Failure, Success) -> Reply<In, Any>
 
-    private let _parse: In -> Reply<In, Out>
+    fileprivate let _parse: (In) -> Reply<In, Out>
 
-    public init(_ parse: In -> Reply<In, Out>)
+    public init(_ parse: @escaping (In) -> Reply<In, Out>)
     {
         self._parse = parse
     }
@@ -19,14 +22,14 @@ public struct Parser<In, Out>
 
 /// Runs a parser `p`.
 /// - Returns: `Reply<In, Out>`
-public func parse<In, Out>(p: Parser<In, Out>, _ input: In) -> Reply<In, Out>
+public func parse<In, Out>(_ p: Parser<In, Out>, _ input: In) -> Reply<In, Out>
 {
     return p._parse(input)
 }
 
 /// Runs a parser `p` that cannot be resupplied via a 'Partial' reply.
 /// - Returns: `Result<Out, ParseError>`
-public func parseOnly<In, Out>(p: Parser<In, Out>, _ input: In) -> Result<Out, ParseError>
+public func parseOnly<In, Out>(_ p: Parser<In, Out>, _ input: In) -> Result<Out, ParseError>
 {
     return parse(p, input).result
 }
@@ -38,19 +41,19 @@ public func parseOnly<In, Out>(p: Parser<In, Out>, _ input: In) -> Result<Out, P
 
 // MARK: Monad
 
-public func fail<In, Out>(message: String) -> Parser<In, Out>
+public func fail<In, Out>(_ message: String) -> Parser<In, Out>
 {
-    return Parser { .Fail($0, [], message) }
+    return Parser { .fail($0, [], message) }
 }
 
 /// Haskell's `>>=` & Swift's `flatMap`.
-public func >>- <In, Out1, Out2>(p: Parser<In, Out1>, f: (Out1 -> Parser<In, Out2>)) -> Parser<In, Out2>
+public func >>- <In, Out1, Out2>(p: Parser<In, Out1>, f: @escaping ((Out1) -> Parser<In, Out2>)) -> Parser<In, Out2>
 {
     return Parser { input in
         switch parse(p, input) {
-            case let .Fail(input2, labels, message):
-                return .Fail(input2, labels, message)
-            case let .Done(input2, output):
+            case let .fail(input2, labels, message):
+                return .fail(input2, labels, message)
+            case let .done(input2, output):
                 return parse(f(output), input2)
         }
     }
@@ -66,14 +69,14 @@ public func empty<In, Out>() -> Parser<In, Out>
 
 /// Alternation, choice.
 /// Uses `q` only if `p` failed.
-public func <|> <In, Out>(p: Parser<In, Out>, @autoclosure(escaping) q: () -> Parser<In, Out>) -> Parser<In, Out>
+public func <|> <In, Out>(p: Parser<In, Out>, q: @autoclosure @escaping () -> Parser<In, Out>) -> Parser<In, Out>
 {
     return Parser { input in
         let reply = parse(p, input)
         switch reply {
-            case .Fail:
+            case .fail:
                 return parse(q(), input)
-            case .Done:
+            case .done:
                 return reply
         }
     }
@@ -82,69 +85,69 @@ public func <|> <In, Out>(p: Parser<In, Out>, @autoclosure(escaping) q: () -> Pa
 // MARK: Applicative
 
 /// Lifts `output` to `Parser`.
-public func pure<In, Out>(output: Out) -> Parser<In, Out>
+public func pure<In, Out>(_ output: Out) -> Parser<In, Out>
 {
-    return Parser { .Done($0, output) }
+    return Parser { .done($0, output) }
 }
 
 /// Sequential application.
-public func <*> <In, Out1, Out2>(p: Parser<In, Out1 -> Out2>, @autoclosure(escaping) q: () -> Parser<In, Out1>) -> Parser<In, Out2>
+public func <*> <In, Out1, Out2>(p: Parser<In, (Out1) -> Out2>, q: @autoclosure @escaping () -> Parser<In, Out1>) -> Parser<In, Out2>
 {
     // Comment-Out: slower
 //    return p >>- { f in f <^> q() }
 
     return Parser { input in
         switch parse(p, input) {
-            case let .Fail(input2, labels, message):
-                return .Fail(input2, labels, message)
-            case let .Done(input2, f):
+            case let .fail(input2, labels, message):
+                return .fail(input2, labels, message)
+            case let .done(input2, f):
                 switch parse(q(), input2) {
-                    case let .Fail(input3, labels, message):
-                        return .Fail(input3, labels, message)
-                    case let .Done(input3, output3):
-                        return .Done(input3, f(output3))
+                    case let .fail(input3, labels, message):
+                        return .fail(input3, labels, message)
+                    case let .done(input3, output3):
+                        return .done(input3, f(output3))
                 }
         }
     }
 }
 
 /// Sequence actions, discarding right (value of the second argument).
-public func <* <In, Out1, Out2>(p: Parser<In, Out1>, @autoclosure(escaping) q: () -> Parser<In, Out2>) -> Parser<In, Out1>
+public func <* <In, Out1, Out2>(p: Parser<In, Out1>, q: @autoclosure @escaping () -> Parser<In, Out2>) -> Parser<In, Out1>
 {
     // Comment-Out: slower
 //    return const <^> p <*> q
 
     return Parser { input in
         switch parse(p, input) {
-            case let .Fail(input2, labels, message):
-                return .Fail(input2, labels, message)
-            case let .Done(input2, output2):
+            case let .fail(input2, labels, message):
+                return .fail(input2, labels, message)
+            case let .done(input2, output2):
                 switch parse(q(), input2) {
-                    case let .Fail(input3, labels, message):
-                        return .Fail(input3, labels, message)
-                    case let .Done(input3, _):
-                        return .Done(input3, output2)
+                    case let .fail(input3, labels, message):
+                        return .fail(input3, labels, message)
+                    case let .done(input3, _):
+                        return .done(input3, output2)
                 }
         }
     }
 }
 
 /// Sequence actions, discarding left (value of the first argument).
-public func *> <In, Out1, Out2>(p: Parser<In, Out1>, @autoclosure(escaping) q: () -> Parser<In, Out2>) -> Parser<In, Out2>
+public func *> <In, Out1, Out2>(p: Parser<In, Out1>, q: @autoclosure @escaping () -> Parser<In, Out2>) -> Parser<In, Out2>
 {
     // Comment-Out: slower
 //    return const(id) <^> p <*> q
 
     return Parser { input in
         switch parse(p, input) {
-            case let .Fail(input2, labels, message):
-                return .Fail(input2, labels, message)
-            case let .Done(input2, _):
+            case let .fail(input2, labels, message):
+                return .fail(input2, labels, message)
+            case let .done(input2, _):
                 switch parse(q(), input2) {
-                    case let .Fail(input3, labels, message):
-                        return .Fail(input3, labels, message)
-                    case let .Done(input3, output3):
-                        return .Done(input3, output3)
+                    case let .fail(input3, labels, message):
+                        return .fail(input3, labels, message)
+                    case let .done(input3, output3):
+                        return .done(input3, output3)
                 }
         }
     }
@@ -153,23 +156,23 @@ public func *> <In, Out1, Out2>(p: Parser<In, Out1>, @autoclosure(escaping) q: (
 // MARK: Functor
 
 /// Haskell's `<$>` or `fmap`, Swift's `map`.
-public func <^> <In, Out1, Out2>(f: Out1 -> Out2, p: Parser<In, Out1>) -> Parser<In, Out2>
+public func <^> <In, Out1, Out2>(f: @escaping (Out1) -> Out2, p: Parser<In, Out1>) -> Parser<In, Out2>
 {
     // Comment-Out: slower
 //    return p >>- { a in pure(f(a)) }
 
     return Parser { input in
         switch parse(p, input) {
-            case let .Fail(input2, labels, message):
-                return .Fail(input2, labels, message)
-            case let .Done(input2, output):
-                return .Done(input2, f(output))
+            case let .fail(input2, labels, message):
+                return .fail(input2, labels, message)
+            case let .done(input2, output):
+                return .done(input2, f(output))
         }
     }
 }
 
 /// Argument-flipped `<^>`, i.e. `flip(<^>)`.
-public func <&> <In, Out1, Out2>(p: Parser<In, Out1>, f: Out1 -> Out2) -> Parser<In, Out2>
+public func <&> <In, Out1, Out2>(p: Parser<In, Out1>, f: @escaping (Out1) -> Out2) -> Parser<In, Out2>
 {
     return f <^> p
 }
@@ -177,15 +180,15 @@ public func <&> <In, Out1, Out2>(p: Parser<In, Out1>, f: Out1 -> Out2) -> Parser
 // MARK: Label
 
 /// Adds name to parser.
-public func <?> <In, Out>(p: Parser<In, Out>, @autoclosure(escaping) label: () -> String) -> Parser<In, Out>
+public func <?> <In, Out>(p: Parser<In, Out>, label: @autoclosure @escaping () -> String) -> Parser<In, Out>
 {
     return Parser { input in
         let reply = parse(p, input)
         switch reply {
-            case .Done:
+            case .done:
                 return reply
-            case let .Fail(input2, labels, message2):
-                return .Fail(input2, cons(label())(labels), message2)
+            case let .fail(input2, labels, message2):
+                return .fail(input2, cons(label())(labels), message2)
         }
     }
 }
@@ -193,27 +196,27 @@ public func <?> <In, Out>(p: Parser<In, Out>, @autoclosure(escaping) label: () -
 // MARK: Peek
 
 /// Matches any first element to perform lookahead.
-public func peek<In: CollectionType, Out where In.Generator.Element == Out>() -> Parser<In, Out>
+public func peek<In: Collection, Out>() -> Parser<In, Out> where In.Iterator.Element == Out
 {
     return Parser { input in
         if let head = input.first {
-            return .Done(input, head)
+            return .done(input, head)
         }
         else {
-            return .Fail(input, [], "peek")
+            return .fail(input, [], "peek")
         }
     }
 }
 
 /// Matches only if all input has been consumed.
-public func endOfInput<In: CollectionType>() -> Parser<In, ()>
+public func endOfInput<In: Collection>() -> Parser<In, ()>
 {
     return Parser { input in
         if input.isEmpty {
-            return .Done(input, ())
+            return .done(input, ())
         }
         else {
-            return .Fail(input, [], "endOfInput")
+            return .fail(input, [], "endOfInput")
         }
     }
 }

@@ -1,4 +1,5 @@
 import TryParsec
+import Runes
 import Quick
 import Nimble
 
@@ -111,7 +112,7 @@ class PermutationSpec: QuickSpec
         describe("Permutation (n=3, URL-query example)") {
 
             /// Extracts "value" from "\(key)=value&...".
-            func valueParser(key: USV) -> Parser<USV, USV>
+            func valueParser(_ key: USV) -> Parser<USV, USV>
             {
                 return string(key + "=") *> many1(noneOf("&#")) <* zeroOrOne(char("&"))
             }
@@ -138,7 +139,7 @@ class PermutationSpec: QuickSpec
 
                 for pattern in patterns {
                     /// e.g. "key2=b&key1=a&key3=c"
-                    let query: String = pattern.joinWithSeparator("&")
+                    let query: String = pattern.joined(separator: "&")
 
                     let r = parse(p, query.unicodeScalars)._done
                     expect(r?.input) == ""

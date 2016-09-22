@@ -11,7 +11,7 @@ class StringConversionPerformanceTests: XCTestCase
     {
         super.setUp()
         for _ in 1...10000 {
-            _testString.appendContentsOf("z")
+            _testString.append("z")
         }
     }
 
@@ -20,7 +20,7 @@ class StringConversionPerformanceTests: XCTestCase
     // 0.011sec
     func test_USV_toArray()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._arrayConversionLoops {
                 let _ = [UnicodeScalar](_testString.unicodeScalars)
             }
@@ -30,7 +30,7 @@ class StringConversionPerformanceTests: XCTestCase
     // 0.067sec
     func test_CV_toArray()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._arrayConversionLoops {
                 let _ = [Character](_testString.characters)
             }
@@ -41,7 +41,7 @@ class StringConversionPerformanceTests: XCTestCase
     func test_USV_fromArray()
     {
         let arr = [UnicodeScalar](_testString.unicodeScalars)
-        self.measureBlock {
+        self.measure {
             for _ in 1..._arrayConversionLoops {
                 let _ = String.UnicodeScalarView(arr)
             }
@@ -52,7 +52,7 @@ class StringConversionPerformanceTests: XCTestCase
     func test_CV_fromArray()
     {
         let arr = [Character](_testString.characters)
-        self.measureBlock {
+        self.measure {
             for _ in 1..._arrayConversionLoops {
                 let _ = String.CharacterView(arr)
             }
@@ -65,7 +65,7 @@ class StringConversionPerformanceTests: XCTestCase
     func test_USV_toString()
     {
         let view = _testString.unicodeScalars
-        self.measureBlock {
+        self.measure {
             for _ in 1..._stringConversionLoops {
                 let _ = String(view)
             }
@@ -76,7 +76,7 @@ class StringConversionPerformanceTests: XCTestCase
     func test_CV_toString()
     {
         let view = _testString.characters
-        self.measureBlock {
+        self.measure {
             for _ in 1..._stringConversionLoops {
                 let _ = String(view)
             }
@@ -86,7 +86,7 @@ class StringConversionPerformanceTests: XCTestCase
     // 0.000sec
     func test_USV_fromString()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._stringConversionLoops {
                 let _ = _testString.unicodeScalars
             }
@@ -96,7 +96,7 @@ class StringConversionPerformanceTests: XCTestCase
     // 0.000sec
     func test_CV_fromString()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._stringConversionLoops {
                 let _ = _testString.characters
             }

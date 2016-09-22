@@ -5,7 +5,7 @@ extension Reply
     var _done: (input: In, output: Out)?
     {
         switch self {
-            case let .Done(input, output):
+            case let .done(input, output):
                 return (input, output)
             default:
                 return nil
@@ -15,7 +15,7 @@ extension Reply
     var _fail: (input: In, contexts: [String], message: String)?
     {
         switch self {
-            case let .Fail(input, contexts, message):
+            case let .fail(input, contexts, message):
                 return (input, contexts, message)
             default:
                 return nil
@@ -31,13 +31,13 @@ typealias USV = String.UnicodeScalarView
 
 extension Array
 {
-    var decompose: (head: Generator.Element, tail: [Generator.Element])? {
+    var decompose: (head: Iterator.Element, tail: [Iterator.Element])? {
         return (count > 0) ? (self[0], Array(self[1..<count])) : nil
     }
 }
 
 /// e.g. `between(0, [1, 2, 3]) = [[0, 1, 2, 3], [1, 0, 2, 3], [1, 2, 0, 3], [1, 2, 3, 0]]`.
-func between<T>(x: T, _ ys: [T]) -> [[T]]
+func between<T>(_ x: T, _ ys: [T]) -> [[T]]
 {
     if let (head, tail) = ys.decompose {
         return [[x] + ys] + between(x, tail).map { (val: [T]) -> [T] in [head] + val } // explict type-annotation is needed for faster type-inference
@@ -47,7 +47,7 @@ func between<T>(x: T, _ ys: [T]) -> [[T]]
     }
 }
 
-func permutations<T>(xs: [T]) -> [[T]]
+func permutations<T>(_ xs: [T]) -> [[T]]
 {
     if let (head, tail) = xs.decompose {
         return permutations(tail).flatMap { permTail in

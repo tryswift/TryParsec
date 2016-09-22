@@ -1,4 +1,4 @@
-extension String.UnicodeScalarView: StringLiteralConvertible
+extension String.UnicodeScalarView: ExpressibleByStringLiteral
 {
     public init(stringLiteral value: String)
     {
@@ -16,12 +16,12 @@ extension String.UnicodeScalarView: StringLiteralConvertible
     }
 }
 
-extension String.UnicodeScalarView: ArrayLiteralConvertible
+extension String.UnicodeScalarView: ExpressibleByArrayLiteral
 {
     public init(arrayLiteral elements: UnicodeScalar...)
     {
         self.init()
-        self.appendContentsOf(elements)
+        self.append(contentsOf: elements)
     }
 }
 
@@ -34,40 +34,40 @@ public func == (lhs: String.UnicodeScalarView, rhs: String.UnicodeScalarView) ->
 
 // MARK: Functions
 
-public func isDigit(c: UnicodeScalar) -> Bool
+public func isDigit(_ c: UnicodeScalar) -> Bool
 {
     return "0"..."9" ~= c
 }
 
-public func isHexDigit(c: UnicodeScalar) -> Bool
+public func isHexDigit(_ c: UnicodeScalar) -> Bool
 {
     return "0"..."9" ~= c || "a"..."f" ~= c || "A"..."F" ~= c
 }
 
-public func isLowerAlphabet(c: UnicodeScalar) -> Bool
+public func isLowerAlphabet(_ c: UnicodeScalar) -> Bool
 {
     return "a"..."z" ~= c
 }
 
-public func isUpperAlphabet(c: UnicodeScalar) -> Bool
+public func isUpperAlphabet(_ c: UnicodeScalar) -> Bool
 {
     return "A"..."Z" ~= c
 }
 
-public func isAlphabet(c: UnicodeScalar) -> Bool
+public func isAlphabet(_ c: UnicodeScalar) -> Bool
 {
     return isLowerAlphabet(c) || isUpperAlphabet(c)
 }
 
 private let _spaces: String.UnicodeScalarView = [ " ", "\t", "\n", "\r" ]
 
-public func isSpace(c: UnicodeScalar) -> Bool
+public func isSpace(_ c: UnicodeScalar) -> Bool
 {
     return _spaces.contains(c)
 }
 
 /// UnicodeScalar validation using array of `ClosedInterval`.
-public func isInClosedIntervals(c: UnicodeScalar, _ closedIntervals: ClosedInterval<UInt32>...) -> Bool
+public func isInClosedIntervals(_ c: UnicodeScalar, _ closedIntervals: ClosedRange<UInt32>...) -> Bool
 {
     for closedInterval in closedIntervals {
         if closedInterval.contains(c.value) {
@@ -78,34 +78,38 @@ public func isInClosedIntervals(c: UnicodeScalar, _ closedIntervals: ClosedInter
 }
 
 /// Removes head & tail whitespaces.
-public func trim(cs: String.UnicodeScalarView) -> String.UnicodeScalarView
+public func trim(_ cs: String.UnicodeScalarView) -> String.UnicodeScalarView
 {
     return _trim(cs, true, true)
 }
 
 /// Removes head whitespace.
-public func trimStart(cs: String.UnicodeScalarView) -> String.UnicodeScalarView
+public func trimStart(_ cs: String.UnicodeScalarView) -> String.UnicodeScalarView
 {
     return _trim(cs, true, false)
 }
 
 /// Removes tail whitespace.
-public func trimEnd(cs: String.UnicodeScalarView) -> String.UnicodeScalarView
+public func trimEnd(_ cs: String.UnicodeScalarView) -> String.UnicodeScalarView
 {
     return _trim(cs, false, true)
 }
 
-private func _trim(cs: String.UnicodeScalarView, _ trimsStart: Bool, _ trimsEnd: Bool) -> String.UnicodeScalarView
+private func _trim(_ cs: String.UnicodeScalarView, _ trimsStart: Bool, _ trimsEnd: Bool) -> String.UnicodeScalarView
 {
     var startIndex = cs.startIndex
-    var endIndex = cs.endIndex.predecessor()
+    var endIndex = cs.index(before: cs.endIndex)
+
+    print("1")
 
     while trimsStart && isSpace(cs[startIndex]) {
-        startIndex = startIndex.successor()
+        print("2")
+        startIndex = cs.index(after: startIndex)
     }
 
     while trimsEnd && isSpace(cs[endIndex]) {
-        endIndex = endIndex.predecessor()
+        print(cs[endIndex])
+        endIndex = cs.index(before: endIndex)
     }
 
     return cs[startIndex...endIndex]
