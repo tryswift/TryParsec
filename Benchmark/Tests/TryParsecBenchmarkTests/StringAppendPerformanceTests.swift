@@ -11,7 +11,7 @@ class StringAppendPerformanceTests: XCTestCase
     {
         super.setUp()
         for _ in 1...10000 {
-            _testString.appendContentsOf("z")
+            _testString.append("z")
         }
     }
 
@@ -20,29 +20,30 @@ class StringAppendPerformanceTests: XCTestCase
     // 0.005sec (fast)
     func test_String_appendContentsOf_one()
     {
-        self.measureBlock {
+        self.measure {
             var str = _testString
             for _ in 1..._appendCharLoops {
-                str.appendContentsOf("z")
+                str.append("z")
             }
         }
     }
 
-    // 0.005sec (fast)
-    func test_String_append_unicodeScalar()
-    {
-        self.measureBlock {
-            var str = _testString
-            for _ in 1..._appendCharLoops {
-                str.append("z" as UnicodeScalar)
-            }
-        }
-    }
+    // Comment-Out: `string.append(unicodeScalar)` is not available in Swift 3...
+//    // 0.005sec (fast)
+//    func test_String_append_unicodeScalar()
+//    {
+//        self.measure {
+//            var str = _testString
+//            for _ in 1..._appendCharLoops {
+//                str.append("z" as UnicodeScalar)
+//            }
+//        }
+//    }
 
     // 0.043sec
     func test_String_append_char()
     {
-        self.measureBlock {
+        self.measure {
             var str = _testString
             for _ in 1..._appendCharLoops {
                 str.append("z" as Character)
@@ -53,7 +54,7 @@ class StringAppendPerformanceTests: XCTestCase
     // 0.023sec
     func test_String_interpolation()
     {
-        self.measureBlock {
+        self.measure {
             var str = _testString
             for _ in 1..._appendCharLoops {
                 str = "\(str)z"
@@ -64,7 +65,7 @@ class StringAppendPerformanceTests: XCTestCase
     // 0.004sec (fast)
     func test_USV_append()
     {
-        self.measureBlock {
+        self.measure {
             var unicodeScalarView = _testString.unicodeScalars
             for _ in 1..._appendCharLoops {
                 unicodeScalarView.append("z" as UnicodeScalar)
@@ -75,7 +76,7 @@ class StringAppendPerformanceTests: XCTestCase
     // 0.052sec
     func test_CV_append()
     {
-        self.measureBlock {
+        self.measure {
             var characterView = _testString.characters
             for _ in 1..._appendCharLoops {
                 characterView.append("z" as Character)
@@ -88,10 +89,10 @@ class StringAppendPerformanceTests: XCTestCase
     // 0.000sec (fast)
     func test_String_appendContentsOf()
     {
-        self.measureBlock {
+        self.measure {
             var str = _testString
             for _ in 1..._appendStringLoops {
-                str.appendContentsOf(_testString)
+                str.append(_testString)
             }
         }
     }
@@ -99,10 +100,10 @@ class StringAppendPerformanceTests: XCTestCase
     // 0.048sec
     func test_USV_appendContentsOf()
     {
-        self.measureBlock {
+        self.measure {
             var unicodeScalarView = _testString.unicodeScalars
             for _ in 1..._appendStringLoops {
-                unicodeScalarView.appendContentsOf(_testString.unicodeScalars)
+                unicodeScalarView.append(contentsOf: _testString.unicodeScalars)
             }
         }
     }
@@ -111,10 +112,10 @@ class StringAppendPerformanceTests: XCTestCase
     func test_USV_appendContentsOf_viaString()
     {
         let view = _testString.unicodeScalars
-        self.measureBlock {
+        self.measure {
             var str = String(view)
             for _ in 1..._appendStringLoops {
-                str.appendContentsOf(String(view))
+                str.append(String(view))
             }
             let _ = str.unicodeScalars
         }
@@ -123,10 +124,10 @@ class StringAppendPerformanceTests: XCTestCase
     // 0.780sec
     func test_CV_appendContentsOf()
     {
-        self.measureBlock {
+        self.measure {
             var characterView = _testString.characters
             for _ in 1..._appendStringLoops {
-                characterView.appendContentsOf(_testString.characters)
+                characterView.append(contentsOf: _testString.characters)
             }
         }
     }
@@ -135,10 +136,10 @@ class StringAppendPerformanceTests: XCTestCase
     func test_CV_appendContentsOf_viaString()
     {
         let view = _testString.characters
-        self.measureBlock {
+        self.measure {
             var str = String(view)
             for _ in 1..._appendStringLoops {
-                str.appendContentsOf(String(view))
+                str.append(String(view))
             }
             let _ = str.characters
         }
@@ -147,10 +148,10 @@ class StringAppendPerformanceTests: XCTestCase
     // 0.047sec
     func test_NSString_stringByAppendingString()
     {
-        self.measureBlock {
-            var str: NSString = _testString
+        self.measure {
+            var str: NSString = _testString as NSString
             for _ in 1..._appendStringLoops {
-                str = str.stringByAppendingString(_testString)
+                str = str.appending(_testString) as NSString
             }
         }
     }
@@ -158,10 +159,10 @@ class StringAppendPerformanceTests: XCTestCase
     // 0.001sec
     func test_NSMutableString_appendString()
     {
-        self.measureBlock {
+        self.measure {
             let str: NSMutableString = NSMutableString(string: _testString)
             for _ in 1..._appendStringLoops {
-                str.appendString(_testString)
+                str.append(_testString)
             }
         }
     }

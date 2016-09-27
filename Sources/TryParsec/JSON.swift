@@ -2,12 +2,12 @@
 
 public enum JSON
 {
-    case String(Swift.String)
-    case Number(Double)
-    case Bool(Swift.Bool)
-    case Null
-    case Array([JSON])
-    case Object([Swift.String : JSON])
+    case string(Swift.String)
+    case number(Double)
+    case bool(Swift.Bool)
+    case null
+    case array([JSON])
+    case object([Swift.String : JSON])
 }
 
 // MARK: RawRepresentable
@@ -18,17 +18,17 @@ extension JSON: RawRepresentable
     {
         switch rawValue {
             case let v as Swift.String:
-                self = .String(v)
+                self = .string(v)
             case let v as DoubleType:
-                self = .Number(v.double)
+                self = .number(v.double)
             case let v as Swift.Bool:
-                self = .Bool(v)
+                self = .bool(v)
             case is ():
-                self = .Null
+                self = .null
             case let v as [JSON]:
-                self = .Array(v)
+                self = .array(v)
             case let v as [Swift.String : JSON]:
-                self = .Object(v)
+                self = .object(v)
             default:
                 return nil
         }
@@ -37,12 +37,12 @@ extension JSON: RawRepresentable
     public var rawValue: Any
     {
         switch self {
-            case let .String(v): return v
-            case let .Number(v): return v
-            case let .Bool(v):   return v
-            case let .Null(v):   return v
-            case let .Array(v):  return v
-            case let .Object(v): return v
+            case let .string(v): return v
+            case let .number(v): return v
+            case let .bool(v):   return v
+            case let .null(v):   return v
+            case let .array(v):  return v
+            case let .object(v): return v
         }
     }
 }
@@ -54,17 +54,17 @@ extension JSON: Equatable {}
 public func == (lhs: JSON, rhs: JSON) -> Bool
 {
     switch (lhs, rhs) {
-        case let (.String(l), .String(r)):
+        case let (.string(l), .string(r)):
             return l == r
-        case let (.Number(l), .Number(r)):
+        case let (.number(l), .number(r)):
             return l == r
-        case let (.Bool(l), .Bool(r)):
+        case let (.bool(l), .bool(r)):
             return l == r
-        case (.Null, .Null):
+        case (.null, .null):
             return true
-        case let (.Array(l), .Array(r)):
+        case let (.array(l), .array(r)):
             return l == r
-        case let (.Object(l), .Object(r)):
+        case let (.object(l), .object(r)):
             return l == r
         default:
             return false
@@ -78,12 +78,12 @@ extension JSON: CustomStringConvertible
     public var description: Swift.String
     {
         switch self {
-            case let .String(v):    return ".String(\(v))"
-            case let .Number(v):    return ".Number(\(v))"
-            case let .Bool(v):      return ".Bool(\(v))"
-            case .Null:             return ".Null"
-            case let .Array(v):     return ".Array(\(v.description))"
-            case let .Object(v):    return ".Object(\(v.description))"
+            case let .string(v):    return ".string(\(v))"
+            case let .number(v):    return ".number(\(v))"
+            case let .bool(v):      return ".bool(\(v))"
+            case .null:             return ".null"
+            case let .array(v):     return ".array(\(v.description))"
+            case let .object(v):    return ".object(\(v.description))"
         }
     }
 }
@@ -105,7 +105,7 @@ extension JSON
     public var rawString: Swift.String?
     {
         switch self {
-            case let .String(v): return v
+            case let .string(v): return v
             default: return nil
         }
     }
@@ -113,7 +113,7 @@ extension JSON
     public var rawNumber: Double?
     {
         switch self {
-            case let .Number(v): return v
+            case let .number(v): return v
             default: return nil
         }
     }
@@ -121,7 +121,7 @@ extension JSON
     public var rawBool: Swift.Bool?
     {
         switch self {
-            case let .Bool(v): return v
+            case let .bool(v): return v
             default: return nil
         }
     }
@@ -129,7 +129,7 @@ extension JSON
     public var rawNull: ()?
     {
         switch self {
-            case .Null: return ()
+            case .null: return ()
             default: return nil
         }
     }
@@ -137,7 +137,7 @@ extension JSON
     public var rawArray: [JSON]?
     {
         switch self {
-            case let .Array(v): return v
+            case let .array(v): return v
             default: return nil
         }
     }
@@ -145,7 +145,7 @@ extension JSON
     public var rawObject: [Swift.String : JSON]?
     {
         switch self {
-            case let .Object(v): return v
+            case let .object(v): return v
             default: return nil
         }
     }
@@ -153,16 +153,16 @@ extension JSON
     public var jsonString: Swift.String
     {
         switch self {
-            case let .String(v):    return "\"\(v)\""
-            case let .Number(v):    return "\(v)"
-            case let .Bool(v):      return "\(v)"
-            case .Null:             return "null"
-            case let .Array(v):
+            case let .string(v):    return "\"\(v)\""
+            case let .number(v):    return "\(v)"
+            case let .bool(v):      return "\(v)"
+            case .null:             return "null"
+            case let .array(v):
                 let valuesString = v.reduce("") {
                     ($0 == "" ? "" : $0 + ", ") + $1.jsonString
                 }
                 return "[ " + valuesString + " ]"
-            case let .Object(v):
+            case let .object(v):
                 let keyValuesString = v.reduce("") {
                     ($0 == "" ? "\"" : $0 + ", \"") + $1.0 + "\" : " + $1.1.jsonString
                 }
@@ -175,10 +175,10 @@ extension JSON
 
 extension JSON
 {
-    public enum ParseError: ErrorType
+    public enum ParseError: Error
     {
-        case InvalidJSONFormat
-        case TypeMismatched(expected: Swift.String, actual: Swift.String)
-        case KeyNotFound(Swift.String)
+        case invalidJSONFormat
+        case typeMismatched(expected: Swift.String, actual: Swift.String)
+        case keyNotFound(Swift.String)
     }
 }

@@ -1,4 +1,5 @@
 import TryParsec
+import Runes
 import Result
 import Curry
 
@@ -19,7 +20,7 @@ struct _Model: FromJSON, ToJSON
     let subModel: _SubModel
     let dummy: Bool?    // dummy value not declared in JSON file
 
-    static func fromJSON(json: JSON) -> Result<_Model, JSON.ParseError>
+    static func fromJSON(_ json: JSON) -> Result<_Model, JSON.ParseError>
     {
         //
         // NOTE:
@@ -49,7 +50,7 @@ struct _Model: FromJSON, ToJSON
         return r3
     }
 
-    static func toJSON(model: _Model) -> JSON
+    static func toJSON(_ model: _Model) -> JSON
     {
         return toJSONObject([
             "string" ~ model.string,
@@ -72,13 +73,13 @@ struct _SubModel: FromJSON, ToJSON
     let string: String
     // ...
 
-    static func fromJSON(json: JSON) -> Result<_SubModel, JSON.ParseError>
+    static func fromJSON(_ json: JSON) -> Result<_SubModel, JSON.ParseError>
     {
         return curry(self.init)
             <^> json !! "string"
     }
 
-    static func toJSON(obj: _SubModel) -> JSON
+    static func toJSON(_ obj: _SubModel) -> JSON
     {
         return toJSONObject([
             "string" ~ obj.string

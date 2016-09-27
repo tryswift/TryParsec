@@ -1,4 +1,5 @@
 import TryParsec
+import Runes
 import Quick
 import Nimble
 

@@ -1,15 +1,27 @@
-infix operator >>-  { associativity left precedence 100 }
+/// Haskell `infixl 1` (Control.Lens)
+precedencegroup TryParsecFlipMapPrecedence {
+    associativity: left
+    lowerThan: LogicalDisjunctionPrecedence
+    higherThan: AssignmentPrecedence
+}
 
-infix operator <|>  { associativity right precedence 130 }
+/// Haskell `infixr 1`
+precedencegroup TryParsecCompositionPrecedence {
+    associativity: right
+    lowerThan: LogicalDisjunctionPrecedence
+    higherThan: AssignmentPrecedence
+}
 
-infix operator <*>  { associativity left precedence 140 }
-infix operator <*   { associativity left precedence 140 }
-infix operator *>   { associativity left precedence 140 }
+/// Haskell `infixl 0`
+precedencegroup TryParsecLabelPrecedence {
+    associativity: left
+    lowerThan: TernaryPrecedence
+    higherThan: AssignmentPrecedence
+}
 
-infix operator <^>  { associativity left precedence 140 }
-infix operator <&>  { associativity left precedence 140 }
+infix operator <&> : TryParsecFlipMapPrecedence
 
-infix operator >>>  { associativity right precedence 100 }
-infix operator <<<  { associativity right precedence 100 }
+infix operator >>> : TryParsecCompositionPrecedence
+infix operator <<< : TryParsecCompositionPrecedence
 
-infix operator <?>  { associativity left precedence 0 }
+infix operator <?> : TryParsecLabelPrecedence

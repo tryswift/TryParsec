@@ -1,4 +1,4 @@
-github "thoughtbot/Curry" ~> 2.2
-github "Quick/Quick" ~> 0.9.2
-github "Quick/Nimble" ~> 4.0
+github "inamiy/Curry" "v3.0.0-inamiy.1"
+github "Quick/Quick" "swift-3.0"
+github "Quick/Nimble" ~> 5.0.0
 github "mrackwitz/xcconfigs"

@@ -4,42 +4,44 @@ import Darwin
 import Glibc
 #endif
 
+import Runes
+
 /// Parses one UnicodeScalar that passes `predicate`.
-public func satisfy(predicate: UnicodeScalar -> Bool) -> Parser<String.UnicodeScalarView, UnicodeScalar>
+public func satisfy(_ predicate: @escaping (UnicodeScalar) -> Bool) -> Parser<String.UnicodeScalarView, UnicodeScalar>
 {
     return Parser { input in
-        if let (head, tail) = uncons(input) where predicate(head) {
-            return .Done(tail, head)
+        if let (head, tail) = uncons(input), predicate(head) {
+            return .done(tail, head)
         }
         else {
-            return .Fail(input, [], "satisfy")
+            return .fail(input, [], "satisfy")
         }
     }
 }
 
 /// Skips one UnicodeScalar that passes `predicate`.
-public func skip(predicate: UnicodeScalar -> Bool) -> Parser<String.UnicodeScalarView, ()>
+public func skip(_ predicate: @escaping (UnicodeScalar) -> Bool) -> Parser<String.UnicodeScalarView, ()>
 {
     return Parser { input in
-        if let (head, tail) = uncons(input) where predicate(head) {
-            return .Done(tail, ())
+        if let (head, tail) = uncons(input), predicate(head) {
+            return .done(tail, ())
         }
         else {
-            return .Fail(input, [], "skip")
+            return .fail(input, [], "skip")
         }
     }
 }
 
 /// Skips zero or more UnicodeScalars that passes `predicate`.
-public func skipWhile(predicate: UnicodeScalar -> Bool) -> Parser<String.UnicodeScalarView, ()>
+public func skipWhile(_ predicate: @escaping (UnicodeScalar) -> Bool) -> Parser<String.UnicodeScalarView, ()>
 {
     return Parser { input in
         fix { recur in { input in
-            if let (head, tail) = uncons(input) where predicate(head) {
+            if let (head, tail) = uncons(input), predicate(head) {
                 return recur(tail)
             }
             else {
-                return .Done(input, ())
+                return .done(input, ())
             }
         }}(input)
     }
@@ -47,33 +49,33 @@ public func skipWhile(predicate: UnicodeScalar -> Bool) -> Parser<String.Unicode
 
 /// Parses at maximum of `count` UnicodeScalars.
 /// - Precondition: `count >= 0`
-public func take(count: Int) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
+public func take(_ count: Int) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
 {
     precondition(count >= 0, "`take(count)` requires `count >= 0`.")
 
     return Parser { input in
         if input.count >= count {
             let (prefix, suffix) = splitAt(count)(input)
-            return .Done(suffix, prefix)
+            return .done(suffix, prefix)
         }
         else {
-            return .Fail(input, [], "take(\(count))")
+            return .fail(input, [], "take(\(count))")
         }
     }
 }
 
 /// Parses zero or more UnicodeScalars that passes `predicate`.
-public func takeWhile(predicate: UnicodeScalar -> Bool) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
+public func takeWhile(_ predicate: @escaping (UnicodeScalar) -> Bool) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
 {
     return Parser { input in
         fix { recur in { input, acc in
-            if let (head, tail) = uncons(input) where predicate(head) {
-                return recur(tail, acc + [head])
+            if let (head, tail) = uncons(input), predicate(head) {
+                return recur((tail, acc + [head]))
             }
             else {
-                return .Done(input, acc)
+                return .done(input, acc)
             }
-        }}(input, String.UnicodeScalarView())
+        }}((input, String.UnicodeScalarView()))
     }
 }
 
@@ -85,19 +87,19 @@ private func _any() -> Parser<String.UnicodeScalarView, UnicodeScalar>
 }
 
 /// Parses one UnicodeScalar matching `c`.
-public func char(c: UnicodeScalar) -> Parser<String.UnicodeScalarView, UnicodeScalar>
+public func char(_ c: UnicodeScalar) -> Parser<String.UnicodeScalarView, UnicodeScalar>
 {
     return satisfy { $0 == c }
 }
 
 /// Parses any one UnicodeScalar which doesn't match `c`.
-public func not(c: UnicodeScalar) -> Parser<String.UnicodeScalarView, UnicodeScalar>
+public func not(_ c: UnicodeScalar) -> Parser<String.UnicodeScalarView, UnicodeScalar>
 {
     return satisfy { $0 != c }
 }
 
 /// Parses given string `str`.
-public func string(str: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
+public func string(_ str: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
 {
     // Comment-Out: slower
 //    return _string(str, id)
@@ -110,23 +112,24 @@ public func string(str: String.UnicodeScalarView) -> Parser<String.UnicodeScalar
     }
 }
 
-private func _string(str: String.UnicodeScalarView, _ f: UnicodeScalar -> UnicodeScalar) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
+private func _string(_ str: String.UnicodeScalarView, _ f: @escaping (UnicodeScalar) -> UnicodeScalar) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
 {
     return Parser { input in
         let strCount = str.count
         let prefix = input.prefix(strCount)
         if prefix.map(f) == str.map(f) {
-            let suffix = input.suffixFrom(input.startIndex.advancedBy(strCount))
-            return .Done(suffix, prefix)
+            let index = input.index(input.startIndex, offsetBy: strCount)
+            let suffix = input.suffix(from: index)
+            return .done(suffix, prefix)
         }
         else {
-            return .Fail(input, [], "_string")
+            return .fail(input, [], "_string")
         }
     }
 }
 
 /// Parses given ASCII-string `str` with case-insensitive match.
-public func asciiCI(str: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
+public func asciiCI(_ str: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
 {
     return _string(str, { c in
         let value = c.value
@@ -134,7 +137,7 @@ public func asciiCI(str: String.UnicodeScalarView) -> Parser<String.UnicodeScala
         // if `c` is in `"a"..."z"` (lowercase)
         if 97...122 ~= value {
             // transform to uppercase
-            return UnicodeScalar(value - 32)  // ord 'a' - ord 'A' = 97 - 65 = 32
+            return UnicodeScalar(value - 32)!  // ord 'a' - ord 'A' = 97 - 65 = 32
         }
         else {
             return c
@@ -143,13 +146,13 @@ public func asciiCI(str: String.UnicodeScalarView) -> Parser<String.UnicodeScala
 }
 
 /// Parses one UnicodeScalar which `xs` contains.
-public func oneOf(xs: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, UnicodeScalar>
+public func oneOf(_ xs: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, UnicodeScalar>
 {
     return satisfy { xs.contains($0) }
 }
 
 /// Parses one UnicodeScalar which `xs` doesn't contain.
-public func noneOf(xs: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, UnicodeScalar>
+public func noneOf(_ xs: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, UnicodeScalar>
 {
     return satisfy { !xs.contains($0) }
 }
@@ -221,7 +224,7 @@ private func _endOfLine() -> Parser<String.UnicodeScalarView, ()>
 
 // MARK: String -> Number
 
-private func _signed<N: SignedNumberType>() -> Parser<String.UnicodeScalarView, N -> N>
+private func _signed<N: SignedNumber>() -> Parser<String.UnicodeScalarView, (N) -> N>
 {
     return char("-") *> pure(negate)
         <|> zeroOrOne(char("+")) *> pure(id)

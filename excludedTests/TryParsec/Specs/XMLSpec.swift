@@ -13,22 +13,22 @@ class XMLSpec: QuickSpec
                 let xmlString = "<p class=\"welcome\"><a href=\"underground.html\" target=\"_blank\">Hello</a><?php echo ' Cruel'; ?> World<!-- 💀 --><![CDATA[💣->😇]]></p>"
 
                 let expected: [XML] = [
-                    .Element(
+                    .element(
                         "p",
                         [XML.Attribute("class", "welcome")],
                         [
-                            .Element(
+                            .element(
                                 "a",
                                 [
                                     XML.Attribute("href", "underground.html"),
                                     XML.Attribute("target", "_blank")
                                 ],
-                                [.Text("Hello")]
+                                [.text("Hello")]
                             ),
-                            .ProcessingInstruction("php echo ' Cruel'; "),
-                            .Text(" World"),
-                            .Comment(" 💀 "),
-                            .Text("💣->😇")
+                            .processingInstruction("php echo ' Cruel'; "),
+                            .text(" World"),
+                            .comment(" 💀 "),
+                            .text("💣->😇")
                         ]
                     )
                 ]
@@ -43,21 +43,21 @@ class XMLSpec: QuickSpec
                 let xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!--I love Swift-->\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n<?php /* I love Swift */ ?>\n\n<p class=\"intro\"><a href=\"somewhere\" target=\"_blank\"  >Hello</a> World<![CDATA[if (c<10)]]></p>"
 
                 let expected: [XML] = [
-                    .XMLDeclaration(" version=\"1.0\" encoding=\"UTF-8\""),
-                    .Comment("I love Swift"),
-                    .DOCTYPE(" HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\""),
-                    .ProcessingInstruction("php /* I love Swift */ "),
-                    .Element(
+                    .xmlDeclaration(" version=\"1.0\" encoding=\"UTF-8\""),
+                    .comment("I love Swift"),
+                    .doctype(" HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\""),
+                    .processingInstruction("php /* I love Swift */ "),
+                    .element(
                         "p",
                         [XML.Attribute("class", "intro")],
                         [
-                            .Element(
+                            .element(
                                 "a",
                                 [XML.Attribute("href", "somewhere"), XML.Attribute("target", "_blank")],
-                                [.Text("Hello")]
+                                [.text("Hello")]
                             ),
-                            .Text("World"),
-                            .Text("if (c<10)")
+                            .text("World"),
+                            .text("if (c<10)")
                         ]
                     )
                 ]
@@ -80,7 +80,7 @@ class XMLSpec: QuickSpec
 
                     let r = parse(p, str)._done
                     expect(r?.input) == ""
-                    expect(r?.output) == .DOCTYPE(" HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"")
+                    expect(r?.output) == .doctype(" HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"")
                 }
 
             }
@@ -94,7 +94,7 @@ class XMLSpec: QuickSpec
 
                     let r = parse(p, str)._done
                     expect(r?.input) == ""
-                    expect(r?.output) == .XMLDeclaration(" version=\"1.0\" encoding=\"UTF-8\"")
+                    expect(r?.output) == .xmlDeclaration(" version=\"1.0\" encoding=\"UTF-8\"")
                 }
 
             }
@@ -108,7 +108,7 @@ class XMLSpec: QuickSpec
 
                     let r = parse(p, str)._done
                     expect(r?.input) == ""
-                    expect(r?.output) == .ProcessingInstruction("php /* I love Swift */ ")
+                    expect(r?.output) == .processingInstruction("php /* I love Swift */ ")
                 }
 
             }
@@ -123,9 +123,9 @@ class XMLSpec: QuickSpec
                     let r = parse(p, str)._done
                     expect(r?.input) == ""
                     expect(r?.output) == [
-                        .Comment("I love Swift"),
-                        .ProcessingInstruction("php /* I love Swift */ "),
-                        .Comment("I love Swift")
+                        .comment("I love Swift"),
+                        .processingInstruction("php /* I love Swift */ "),
+                        .comment("I love Swift")
                     ]
                 }
 
@@ -201,7 +201,7 @@ class XMLSpec: QuickSpec
 
                     let r = parse(p, str)._done
                     expect(r?.input) == ""
-                    expect(r?.output) == .EmptyElement("img", [ XML.Attribute("src", "somewhere") ])
+                    expect(r?.output) == .emptyElement("img", [ XML.Attribute("src", "somewhere") ])
                 }
 
                 it("succeeds (emptyElementTag + multiple attributes)") {
@@ -209,7 +209,7 @@ class XMLSpec: QuickSpec
 
                     let r = parse(p, str)._done
                     expect(r?.input) == ""
-                    expect(r?.output) == .EmptyElement("img", [
+                    expect(r?.output) == .emptyElement("img", [
                         XML.Attribute("src", "somewhere"),
                         XML.Attribute("alt", "...")
                     ])
@@ -220,13 +220,13 @@ class XMLSpec: QuickSpec
 
                     let r = parse(p, str)._done
                     expect(r?.input) == ""
-                    expect(r?.output) == .Element(
+                    expect(r?.output) == .element(
                         "a",
                         [
                             XML.Attribute("href", "somewhere"),
                             XML.Attribute("target", "_blank")
                         ],
-                        [.Text("Hello")]
+                        [.text("Hello")]
                     )
                 }
 
@@ -278,11 +278,11 @@ class XMLSpec: QuickSpec
                     let r = parse(p, str)._done
                     expect(r?.input) == ""
                     expect(r?.output) == [
-                        .XMLDeclaration(" version=\"1.0\" encoding=\"UTF-8\""),
-                        .Comment("I love Swift"),
-                        .DOCTYPE(" HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\""),
-                        .Comment("I ♡ Swift"),
-                        .ProcessingInstruction("php /* I love Swift */ "),
+                        .xmlDeclaration(" version=\"1.0\" encoding=\"UTF-8\""),
+                        .comment("I love Swift"),
+                        .doctype(" HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\""),
+                        .comment("I ♡ Swift"),
+                        .processingInstruction("php /* I love Swift */ "),
                     ]
                 }
 
@@ -297,7 +297,7 @@ class XMLSpec: QuickSpec
 
                     let r = parse(p, str)._done
                     expect(r?.input) == ""
-                    expect(r?.output) == [ .Text("abc") ]
+                    expect(r?.output) == [ .text("abc") ]
                 }
 
                 it("succeeds (CharData + Comment)") {
@@ -306,8 +306,8 @@ class XMLSpec: QuickSpec
                     let r = parse(p, str)._done
                     expect(r?.input) == ""
                     expect(r?.output) == [
-                        .Text("abc"),
-                        .Comment(" comment ")
+                        .text("abc"),
+                        .comment(" comment ")
                     ]
                 }
 
@@ -317,9 +317,9 @@ class XMLSpec: QuickSpec
                     let r = parse(p, str)._done
                     expect(r?.input) == ""
                     expect(r?.output) == [
-                        .Text("Hello"),
-                        .ProcessingInstruction("php echo \" Cruel\"; "),
-                        .Text(" World!")
+                        .text("Hello"),
+                        .processingInstruction("php echo \" Cruel\"; "),
+                        .text(" World!")
                     ]
                 }
 
@@ -328,7 +328,7 @@ class XMLSpec: QuickSpec
             describe("xmlDocument") {
 
                 it("succeeds") {
-                    let str = self.dynamicType.loadString("test4", "xml")
+                    let str = type(of: self).loadString("test4", "xml")
 //                    let str = "<param-value>/content/admin/remove?cache=pages&amp;id=</param-value>"
 
                     let p = xmlDocument
@@ -356,7 +356,7 @@ class XMLSpec: QuickSpec
                     print("file = \(file)")
                     print("")
 
-                    let xmlString = self.dynamicType.loadString(file, "xml")
+                    let xmlString = type(of: self).loadString(file, "xml")
                     //print("xmlString = ", xmlString)
                     print("")
 

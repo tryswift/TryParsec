@@ -1,4 +1,16 @@
-infix operator !!   { associativity left precedence 180 }
-infix operator !?   { associativity left precedence 180 }
+/// Haskell `infixl 9`
+precedencegroup TryParsecJSONExtractionPrecedence {
+    associativity: left
+    higherThan: BitwiseShiftPrecedence
+}
 
-infix operator ~    { associativity left precedence 180 }
+/// Haskell `infixl 9`
+precedencegroup TryParsecJSONKeyValuePrecedence {
+    associativity: left
+    higherThan: BitwiseShiftPrecedence
+}
+
+infix operator !! : TryParsecJSONExtractionPrecedence
+infix operator !? : TryParsecJSONExtractionPrecedence
+
+infix operator ~  : TryParsecJSONKeyValuePrecedence

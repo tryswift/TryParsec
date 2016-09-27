@@ -10,7 +10,7 @@ class ConsPerformanceTests: XCTestCase
     {
         super.setUp()
         for _ in 1...10000 {
-            _testString.appendContentsOf("z")
+            _testString.append("z")
         }
     }
 
@@ -20,7 +20,7 @@ class ConsPerformanceTests: XCTestCase
     // 0.024sec (slower than `test_cons_String_appendContentsOf`)
     func test_cons_RRC_insert()
     {
-        self.measureBlock {
+        self.measure {
             var unicodeScalarView = _testString.unicodeScalars
             for _ in 1..._loops {
                 unicodeScalarView = cons_RRC_insert("z")(unicodeScalarView)
@@ -31,7 +31,7 @@ class ConsPerformanceTests: XCTestCase
     // 0.389sec
     func test_cons_RRC_append()
     {
-        self.measureBlock {
+        self.measure {
             var unicodeScalarView = _testString.unicodeScalars
             for _ in 1..._loops {
                 unicodeScalarView = cons_RRC_append("z")(unicodeScalarView)
@@ -42,7 +42,7 @@ class ConsPerformanceTests: XCTestCase
     // 0.395sec
     func test_cons_USV_append()
     {
-        self.measureBlock {
+        self.measure {
             var unicodeScalarView = _testString.unicodeScalars
             for _ in 1..._loops {
                 unicodeScalarView = cons_USV_append("z")(unicodeScalarView)
@@ -53,7 +53,7 @@ class ConsPerformanceTests: XCTestCase
     // 0.347sec
     func test_cons_USV_appendContentsOf()
     {
-        self.measureBlock {
+        self.measure {
             var unicodeScalarView = _testString.unicodeScalars
             for _ in 1..._loops {
                 unicodeScalarView = cons_USV_appendContentsOf("z".unicodeScalars)(unicodeScalarView)
@@ -64,7 +64,7 @@ class ConsPerformanceTests: XCTestCase
     // 0.001sec (fast)
     func test_cons_String_appendContentsOf()
     {
-        self.measureBlock {
+        self.measure {
             var str: String = _testString
             for _ in 1..._loops {
                 str = cons_String_appendContentsOf("z")(str)
@@ -75,10 +75,10 @@ class ConsPerformanceTests: XCTestCase
     // 0.002sec (fast)
     func test_cons_NSString_stringByAppendingString()
     {
-        self.measureBlock {
-            var str: NSString = _testString
+        self.measure {
+            var str: NSString = _testString as NSString
             for _ in 1..._loops {
-                str = str.stringByAppendingString("z")
+                str = str.appending("z") as NSString
             }
         }
     }
@@ -87,49 +87,51 @@ class ConsPerformanceTests: XCTestCase
 // MARK: Functions
 
 /// Current `TryParsec.cons`.
-func cons_RRC_insert<A, C: RangeReplaceableCollectionType where C.Generator.Element == A>(x: A) -> C -> C
+func cons_RRC_insert<A, C: RangeReplaceableCollection>(_ x: A) -> (C) -> C
+    where C.Iterator.Element == A
 {
     return { xs in
         var xs = xs
-        xs.insert(x, atIndex: xs.startIndex)
+        xs.insert(x, at: xs.startIndex)
         return xs
     }
 }
 
-func cons_RRC_append<A, C: RangeReplaceableCollectionType where C.Generator.Element == A>(x: A) -> C -> C
+func cons_RRC_append<A, C: RangeReplaceableCollection>(_ x: A) -> (C) -> C
+    where C.Iterator.Element == A
 {
     return { xs in
         var view = C()
         view.append(x)
-        view.appendContentsOf(xs)
+        view.append(contentsOf: xs)
         return view
     }
 }
 
-func cons_USV_append(x: UnicodeScalar) -> String.UnicodeScalarView -> String.UnicodeScalarView
+func cons_USV_append(_ x: UnicodeScalar) -> (String.UnicodeScalarView) -> String.UnicodeScalarView
 {
     return { xs in
         var view = String.UnicodeScalarView()
         view.append(x)
-        view.appendContentsOf(xs)
+        view.append(contentsOf: xs)
         return view
     }
 }
 
-func cons_USV_appendContentsOf(xs: String.UnicodeScalarView) -> String.UnicodeScalarView -> String.UnicodeScalarView
+func cons_USV_appendContentsOf(_ xs: String.UnicodeScalarView) -> (String.UnicodeScalarView) -> String.UnicodeScalarView
 {
     return { xs2 in
         var xs = xs
-        xs.appendContentsOf(xs2)
+        xs.append(contentsOf: xs2)
         return xs
     }
 }
 
-func cons_String_appendContentsOf(x: UnicodeScalar) -> String -> String
+func cons_String_appendContentsOf(_ x: UnicodeScalar) -> (String) -> String
 {
     return { str2 in
         var str = String(x)
-        str.appendContentsOf(str2)
+        str.append(str2)
         return str
     }
 }

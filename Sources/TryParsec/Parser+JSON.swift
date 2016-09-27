@@ -1,3 +1,4 @@
+import Runes
 import Result
 
 //
@@ -6,15 +7,15 @@ import Result
 //
 
 /// Parses JSON.
-public func parseJSON(str: String) -> Result<JSON, ParseError>
+public func parseJSON(_ str: String) -> Result<JSON, ParseError>
 {
     return parseOnly(json, str.unicodeScalars)
 }
 
-/// Helper function to return `.Failure` from type-mismatched JSON.
-public func typeMismatch<Expected>(json: JSON, expected: String) -> Result<Expected, JSON.ParseError>
+/// Helper function to return `.failure` from type-mismatched JSON.
+public func typeMismatch<Expected>(_ json: JSON, expected: String) -> Result<Expected, JSON.ParseError>
 {
-    return .Failure(.TypeMismatched(expected: expected, actual: json.description))
+    return .failure(.typeMismatched(expected: expected, actual: json.description))
 }
 
 // MARK: Private
@@ -34,20 +35,20 @@ private func _jsonValue() -> Parser<String.UnicodeScalarView, JSON>
 internal let jsonNull = _jsonNull()
 private func _jsonNull() -> Parser<String.UnicodeScalarView, JSON>
 {
-    return string("null") *> pure(.Null)
+    return string("null") *> pure(.null)
 }
 
 internal let jsonBool = _jsonBool()
 private func _jsonBool() -> Parser<String.UnicodeScalarView, JSON>
 {
-    return (string("true") *> pure(.Bool(true)))
-        <|> (string("false") *> pure(.Bool(false)))
+    return (string("true") *> pure(.bool(true)))
+        <|> (string("false") *> pure(.bool(false)))
 }
 
 internal let jsonNumber = _jsonNumber()
 private func _jsonNumber() -> Parser<String.UnicodeScalarView, JSON>
 {
-    return number <&> JSON.Number
+    return number <&> JSON.number
 }
 
 private let _escapedCharMapping: [UnicodeScalar : UnicodeScalar] = [
@@ -72,7 +73,7 @@ private func _stringLiteral() -> Parser<String.UnicodeScalarView, String.Unicode
         <&> { _escapedCharMapping[$0]! }
     let unicodeChar = string("\\u")
         *> count(4, hexDigit)
-        <&> { UnicodeScalar(Int(String($0), radix: 16)!) }
+        <&> { UnicodeScalar(Int(String($0), radix: 16)!)! }
     let validChar = normalChar <|> escapedChar <|> unicodeChar
 
     return char("\"") *> many(validChar) <* char("\"")
@@ -81,14 +82,14 @@ private func _stringLiteral() -> Parser<String.UnicodeScalarView, String.Unicode
 internal let jsonString = _jsonString()
 private func _jsonString() -> Parser<String.UnicodeScalarView, JSON>
 {
-    return stringLiteral <&> { JSON.String(String($0)) }
+    return stringLiteral <&> { JSON.string(String($0)) }
 }
 
 private func _list<A>(
-    open: Parser<String.UnicodeScalarView, UnicodeScalar>,
+    _ open: Parser<String.UnicodeScalarView, UnicodeScalar>,
     _ close: Parser<String.UnicodeScalarView, UnicodeScalar>,
     _ element: Parser<String.UnicodeScalarView, A>,
-    _ f: ([A] -> JSON)
+    _ f: @escaping (([A]) -> JSON)
     ) -> Parser<String.UnicodeScalarView, JSON>
 {
     return open *>
@@ -99,7 +100,7 @@ private func _list<A>(
 internal let jsonArray = _jsonArray()
 private func _jsonArray() -> Parser<String.UnicodeScalarView, JSON>
 {
-    return _list(char("["), char("]"), jsonValue, JSON.Array)
+    return _list(char("["), char("]"), jsonValue, JSON.array)
 }
 
 internal let keyValue = _keyValue()
@@ -114,6 +115,6 @@ internal let jsonObject = _jsonObject()
 private func _jsonObject() -> Parser<String.UnicodeScalarView, JSON>
 {
     return _list(char("{"), char("}"), keyValue) { tuples in
-        JSON.Object(toDict(tuples.map { (String($0.0), $0.1) }))
+        JSON.object(toDict(tuples.map { (String($0.0), $0.1) }))
     }
 }

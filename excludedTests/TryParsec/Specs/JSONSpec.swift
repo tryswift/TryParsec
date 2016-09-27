@@ -13,10 +13,10 @@ class JSONSpec: QuickSpec
 
                 let jsonString = "{ \"items\": [ { \"hidden\" : true } ] }"
 
-                let expected = JSON.Object([
-                    "items" : JSON.Array([
-                        JSON.Object([
-                            "hidden" : JSON.Bool(true)
+                let expected = JSON.object([
+                    "items" : JSON.array([
+                        JSON.object([
+                            "hidden" : JSON.bool(true)
                         ])
                     ])
                 ])
@@ -32,9 +32,9 @@ class JSONSpec: QuickSpec
 
                 let jsonString = "{ \"string\" : \"hello\", \"array\" : [1, \"two\", [true, null]] }"
 
-                let expected = JSON.Object([
-                    "string" : .String("hello"),
-                    "array" : .Array([.Number(1), .String("two"), .Array([.Bool(true), .Null])])
+                let expected = JSON.object([
+                    "string" : .string("hello"),
+                    "array" : .array([.number(1), .string("two"), .array([.bool(true), .null])])
                 ])
 
                 let r = parseJSON(jsonString)
@@ -59,13 +59,13 @@ class JSONSpec: QuickSpec
                 it("succeeds") {
                     let r = parse(p, "\"123\"")._done
                     expect(r?.input) == ""
-                    expect(r?.output) == JSON.String("123")
+                    expect(r?.output) == JSON.string("123")
                 }
 
                 it("succeeds (partial)") {
                     let r = parse(p, "\"123\nabc\"other")._done
                     expect(r?.input) == "other"
-                    expect(r?.output) == JSON.String("123\nabc")
+                    expect(r?.output) == JSON.string("123\nabc")
                 }
 
                 it("fails") {
@@ -84,19 +84,19 @@ class JSONSpec: QuickSpec
                 it("succeeds") {
                     let r = parse(p, "1.2")._done
                     expect(r?.input) == ""
-                    expect(r?.output) == JSON.Number(1.2)
+                    expect(r?.output) == JSON.number(1.2)
                 }
 
                 it("succeeds (scientific small-e)") {
                     let r = parse(p, "1.2e3")._done
                     expect(r?.input) == ""
-                    expect(r?.output) == JSON.Number(1200)
+                    expect(r?.output) == JSON.number(1200)
                 }
 
                 it("succeeds (scientific large-E)") {
                     let r = parse(p, "-1.2E3")._done
                     expect(r?.input) == ""
-                    expect(r?.output) == JSON.Number(-1200)
+                    expect(r?.output) == JSON.number(-1200)
                 }
 
                 it("fails") {
@@ -115,13 +115,13 @@ class JSONSpec: QuickSpec
                 it("succeeds (true)") {
                     let r = parse(p, "true")._done
                     expect(r?.input) == ""
-                    expect(r?.output) == JSON.Bool(true)
+                    expect(r?.output) == JSON.bool(true)
                 }
 
                 it("succeeds (false)") {
                     let r = parse(p, "false")._done
                     expect(r?.input) == ""
-                    expect(r?.output) == JSON.Bool(false)
+                    expect(r?.output) == JSON.bool(false)
                 }
 
                 it("fails") {
@@ -147,7 +147,7 @@ class JSONSpec: QuickSpec
                 it("succeeds") {
                     let r = parse(p, "[ true, false ]")._done
                     expect(r?.input) == ""
-                    expect(r?.output) == JSON.Array([JSON.Bool(true), JSON.Bool(false)])
+                    expect(r?.output) == JSON.array([JSON.bool(true), JSON.bool(false)])
                 }
 
                 it("fails") {
@@ -166,7 +166,7 @@ class JSONSpec: QuickSpec
                 it("succeeds") {
                     let r = parse(p, "{ \"test\" : true }")._done
                     expect(r?.input) == ""
-                    expect(r?.output) == JSON.Object([ "test" : JSON.Bool(true) ])
+                    expect(r?.output) == JSON.object([ "test" : JSON.bool(true) ])
                 }
 
                 it("fails") {
@@ -209,7 +209,7 @@ class JSONSpec: QuickSpec
                     print("file = \(file)")
                     print("")
 
-                    let jsonString = self.dynamicType.loadString(file, "json")
+                    let jsonString = type(of: self).loadString(file, "json")
                     print("jsonString = ", jsonString)
                     print("")
 
@@ -221,7 +221,7 @@ class JSONSpec: QuickSpec
             }
 
             it("decodes JSON file as _Model & encode") {
-                let jsonString = self.dynamicType.loadString("basic", "json")
+                let jsonString = type(of: self).loadString("basic", "json")
                 print("jsonString =", jsonString)
 
                 let decoded: Result<_Model, JSON.ParseError> = decode(jsonString)

@@ -12,6 +12,9 @@
       location = "container:"
       name = "Carthage">
       <FileRef
+         location = "group:Carthage/Checkouts/Runes/Runes.xcodeproj">
+      </FileRef>
+      <FileRef
          location = "group:Carthage/Checkouts/Result/Result.xcodeproj">
       </FileRef>
       <Group

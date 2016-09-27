@@ -13,21 +13,21 @@ func now() -> Double
 #endif
 }
 
-func startBenchmark<T>(f: String -> T, _ filename: String, _ fileExt: String)
+func startBenchmark<T>(_ f: (String) -> T, _ filename: String, _ fileExt: String)
 {
     let jsonString = loadString(filename, fileExt)
 
     let startTime = now()
     for _ in 1...1000 {
 
-        f(jsonString)
+        _ = f(jsonString)
 
     }
     let diffTime = now() - startTime
     print(diffTime)
 }
 
-func loadString(resourceName: String, _ extensionName: String, filename: String = #file, functionName: String = #function, line: Int = #line) -> String
+func loadString(_ resourceName: String, _ extensionName: String, _ filename: String = #file, _ functionName: String = #function, _ line: Int = #line) -> String
 {
 #if SWIFT_PACKAGE
     let resourceDir = "../../../TestAssets"
@@ -35,9 +35,9 @@ func loadString(resourceName: String, _ extensionName: String, filename: String 
     let resourceDir = "TestAssets"
 #endif
 
-    let jsonString = NSBundle.mainBundle()
-        .URLForResource("\(resourceDir)/\(resourceName)", withExtension: extensionName)
-        .flatMap { try? String(contentsOfURL: $0, encoding: NSUTF8StringEncoding) }
+    let jsonString = Bundle.main
+        .url(forResource: "\(resourceDir)/\(resourceName)", withExtension: extensionName)
+        .flatMap { try? String(contentsOf: $0, encoding: .utf8) }
 
     if jsonString == nil {
         fatalError("\(functionName): No file (\(resourceName).\(extensionName)) found.")

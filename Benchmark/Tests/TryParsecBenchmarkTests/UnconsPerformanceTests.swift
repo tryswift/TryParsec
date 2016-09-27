@@ -11,7 +11,7 @@ class UnconsPerformanceTests: XCTestCase
     {
         super.setUp()
         for _ in 1...10000 {
-            _testString.appendContentsOf("z")
+            _testString.append("z")
         }
     }
 
@@ -20,7 +20,7 @@ class UnconsPerformanceTests: XCTestCase
     // 0.056sec
     func test_first_String()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._firstLoops {
                 let _ = _testString[_testString.startIndex]
             }
@@ -30,7 +30,7 @@ class UnconsPerformanceTests: XCTestCase
     // 0.004sec (fast)
     func test_first_UnicodeScalarView()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._firstLoops {
 //                let _ = _testString.unicodeScalars.first    // 0.004sec
                 let _ = _testString.unicodeScalars[_testString.unicodeScalars.startIndex]   // 0.004sec
@@ -41,7 +41,7 @@ class UnconsPerformanceTests: XCTestCase
     // 0.048sec
     func test_first_CharacterView()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._firstLoops {
 //                let _ = _testString.characters.first    // 0.072sec (this is slow... interesting)
                 let _ = _testString.characters[_testString.characters.startIndex]   // 0.048sec
@@ -54,9 +54,9 @@ class UnconsPerformanceTests: XCTestCase
     func test_first_NSString()
     {
         let str = _testString as NSString
-        self.measureBlock {
+        self.measure {
             for _ in 1..._firstLoops {
-                let _ = str.substringToIndex(1)
+                let _ = str.substring(to: 1)
             }
         }
     }
@@ -67,7 +67,7 @@ class UnconsPerformanceTests: XCTestCase
     // 0.001sec (fast)
     func test_uncons_UnicodeScalarView()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._unconsLoops {
                 let _ = uncons_first_suffixFrom(_testString.unicodeScalars)
             }
@@ -77,7 +77,7 @@ class UnconsPerformanceTests: XCTestCase
     /// 0.012sec
     func test_uncons_CharacterView()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._unconsLoops {
                 let _ = uncons_first_suffixFrom(_testString.characters)
             }
@@ -88,7 +88,7 @@ class UnconsPerformanceTests: XCTestCase
 //    // 0.033sec for `_loops=100`
 //    func test_uncons_removeFirst_UnicodeScalarView()
 //    {
-//        self.measureBlock {
+//        self.measure {
 //            for _ in 1..._unconsLoops {
 //                let _ = uncons_removeFirst(_testString.unicodeScalars)
 //            }
@@ -100,7 +100,7 @@ class UnconsPerformanceTests: XCTestCase
     // 0.002sec (fast)
     func test_split_UnicodeScalarView()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._unconsLoops {
                 let _ = split_ranges(_testString.unicodeScalars)
             }
@@ -110,7 +110,7 @@ class UnconsPerformanceTests: XCTestCase
     // 0.020sec
     func test_split_CharacterView()
     {
-        self.measureBlock {
+        self.measure {
             for _ in 1..._unconsLoops {
                 let _ = split_ranges(_testString.characters)
             }
@@ -120,10 +120,10 @@ class UnconsPerformanceTests: XCTestCase
     // 0.004sec (fast)
     func test_split_NSString()
     {
-        let str: NSString = _testString
-        self.measureBlock {
+        let str: NSString = _testString as NSString
+        self.measure {
             for _ in 1..._unconsLoops {
-                let _ = (str.substringToIndex(1), str.substringFromIndex(1))
+                let _ = (str.substring(to: 1), str.substring(from: 1))
             }
         }
     }
@@ -132,17 +132,18 @@ class UnconsPerformanceTests: XCTestCase
 // MARK: Functions
 
 /// Current `TryParsec.uncons`.
-func uncons_first_suffixFrom<C: CollectionType>(xs: C) -> (C.Generator.Element, C.SubSequence)?
+func uncons_first_suffixFrom<C: Collection>(_ xs: C) -> (C.Iterator.Element, C.SubSequence)?
 {
     if let head = xs.first {
-        return (head, xs.suffixFrom(xs.startIndex.successor()))
+        return (head, xs.suffix(from: xs.index(after: xs.startIndex)))
     }
     else {
         return nil
     }
 }
 
-func uncons_removeFirst<A, C: RangeReplaceableCollectionType where C.Generator.Element == A>(xs: C) -> (A, C)?
+func uncons_removeFirst<A, C: RangeReplaceableCollection>(_ xs: C) -> (A, C)?
+    where C.Iterator.Element == A
 {
     if xs.first != nil {
         var xs = xs
@@ -154,10 +155,12 @@ func uncons_removeFirst<A, C: RangeReplaceableCollectionType where C.Generator.E
     }
 }
 
-func split_ranges<A, C: CollectionType where C.Generator.Element == A>(xs: C) -> (C.SubSequence, C.SubSequence)?
+func split_ranges<A, C: Collection>(_ xs: C) -> (C.SubSequence, C.SubSequence)?
+    where C.Iterator.Element == A
 {
     if xs.first != nil {
-        return (xs[xs.startIndex..<xs.startIndex.successor()], xs[xs.startIndex.successor()..<xs.endIndex])
+        let index1 = xs.index(after: xs.startIndex)
+        return (xs[xs.startIndex..<index1], xs[index1..<xs.endIndex])
     }
     else {
         return nil

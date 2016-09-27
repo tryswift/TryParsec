@@ -1,4 +1,7 @@
+import Runes
 import Result
+
+infix operator >>- : RunesMonadicPrecedenceLeft // redefine
 
 //
 // XML 1.0
@@ -6,7 +9,7 @@ import Result
 //
 
 /// Parses XML.
-public func parseXML(str: String) -> Result<[XML], ParseError>
+public func parseXML(_ str: String) -> Result<[XML], ParseError>
 {
     return parseOnly(xmlDocument, str.unicodeScalars)
 }
@@ -27,7 +30,7 @@ internal let xmlDeclaration = _xmlDeclaration()
 private func _xmlDeclaration() -> Parser<String.UnicodeScalarView, XML>
 {
     return string("<?xml") *> manyTill(any, string("?>"))
-        <&> { .XMLDeclaration(String($0)) }
+        <&> { .xmlDeclaration(String($0)) }
 }
 
 /// doctypedecl ::= '<!DOCTYPE' S Name ( S ExternalID )? S? ( '[' intSubset ']' S? )? '>'
@@ -35,7 +38,7 @@ internal let doctype = _doctype()
 private func _doctype() -> Parser<String.UnicodeScalarView, XML>
 {
     return string("<!DOCTYPE") *> manyTill(any, string(">"))
-        <&> { .DOCTYPE(String($0)) }
+        <&> { .doctype(String($0)) }
 }
 
 /// Comment ::= '<!--' ( Char - '-' | '-' ( Char - '-' ) )* '-->'
@@ -43,7 +46,7 @@ internal let comment = _comment()
 private func _comment() -> Parser<String.UnicodeScalarView, XML>
 {
     return string("<!--") *> manyTill(any, string("-->"))
-        <&> { .Comment(String($0)) }
+        <&> { .comment(String($0)) }
 }
 
 /// - CDSect ::= CDStart CData CDEnd
@@ -54,7 +57,7 @@ internal let cdata = _cdata()
 private func _cdata() -> Parser<String.UnicodeScalarView, XML>
 {
     return string("<![CDATA[") *> manyTill(any, string("]]>"))
-        <&> { .Text(String($0)) }
+        <&> { .text(String($0)) }
 }
 
 /// PI ::= '<?' PITarget ( S ( Char* - ( Char* '?>' Char* ) ) )? '?>'
@@ -62,7 +65,7 @@ internal let processingInstruction = _processingInstruction()
 private func _processingInstruction() -> Parser<String.UnicodeScalarView, XML>
 {
     return string("<?") *> manyTill(any, string("?>"))
-        <&> { .ProcessingInstruction(String($0)) }
+        <&> { .processingInstruction(String($0)) }
 }
 
 /// Misc ::= Comment | PI | S
@@ -98,12 +101,12 @@ private func _xmlElement() -> Parser<String.UnicodeScalarView, XML>
                 *> many(attribute <* skipSpaces)
                 >>- { (attrs: [XML.Attribute]) in
                     skipSpaces
-                        *> (string("/>") *> pure(XML.EmptyElement(String(tagName), attrs)))
+                        *> (string("/>") *> pure(XML.emptyElement(String(tagName), attrs)))
                         <|> (string(">")
                             *> xmlContent >>- { (bodies: [XML]) in
                                 _endTag(tagName)
                                     *> skipSpaces
-                                    *> pure(XML.Element(String(tagName), attrs, bodies))
+                                    *> pure(XML.element(String(tagName), attrs, bodies))
                             })
 
                 }
@@ -118,7 +121,7 @@ private func _xmlContent() -> Parser<String.UnicodeScalarView, [XML]>
 }
 
 /// ETag ::= '</' Name S? '>'
-private func _endTag(tagName: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
+private func _endTag(_ tagName: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
 {
     return string("</") *> string(tagName) <* char(">")
 }
@@ -127,7 +130,7 @@ private func _endTag(tagName: String.UnicodeScalarView) -> Parser<String.Unicode
 internal let charData = _charData()
 private func _charData() -> Parser<String.UnicodeScalarView, XML>
 {
-    return many1(noneOf("><&")) <&> { XML.Text(String($0)) }
+    return many1(noneOf("><&")) <&> { XML.text(String($0)) }
 }
 
 /// Attribute ::= Name Eq AttValue
@@ -144,7 +147,7 @@ private func _attribute() -> Parser<String.UnicodeScalarView, XML.Attribute>
     }
 }
 
-private func _isNameStartChar(c: UnicodeScalar) -> Bool
+private func _isNameStartChar(_ c: UnicodeScalar) -> Bool
 {
     return c == ":" || c == "_" || isAlphabet(c) || isInClosedIntervals(c, 0x00c0...0x00d6, 0x00d8...0x00f6, 0x00f8...0x02ff, 0x0370...0x037d, 0x037f...0x1fff, 0x200c...0x200d, 0x2070...0x218f, 0x2c00...0x2fef, 0x3001...0xd7ff, 0xf900...0xfdcf, 0xfdf0...0xfffd, 0x10000...0xeffff)
 }
@@ -155,7 +158,7 @@ private func _nameStartChar() -> Parser<String.UnicodeScalarView, UnicodeScalar>
     return satisfy(_isNameStartChar)
 }
 
-private func _isNameChar(c: UnicodeScalar) -> Bool
+private func _isNameChar(_ c: UnicodeScalar) -> Bool
 {
     return _isNameStartChar(c) || c == "-" || c == "." || isDigit(c) || c == "\u{00b7}" || isInClosedIntervals(c, 0x0300...0x036f, 0x203f...0x2040)
 }
@@ -177,10 +180,10 @@ private func _xmlName() -> Parser<String.UnicodeScalarView, String.UnicodeScalar
 internal let attrValue = _attrValue()
 private func _attrValue() -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
 {
-    func manyRefsButNoneOf(cs: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
+    func manyRefsButNoneOf(_ cs: String.UnicodeScalarView) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
     {
         return many((noneOf(cs) <&> String.UnicodeScalarView.init) <|> entityRef <|> charRef)
-            <&> { (xss: [String.UnicodeScalarView]) in xss.reduce("", combine: +) }
+            <&> { (xss: [String.UnicodeScalarView]) in xss.reduce("", +) }
     }
 
     return (char("\"") *> manyRefsButNoneOf("<&\"") <* char("\""))
@@ -194,7 +197,7 @@ private func _attrValue() -> Parser<String.UnicodeScalarView, String.UnicodeScal
 internal let reference = _reference()
 private func _reference() -> Parser<String.UnicodeScalarView, XML>
 {
-    return (entityRef <|> charRef) <&> { XML.Text(String($0)) }
+    return (entityRef <|> charRef) <&> { XML.text(String($0)) }
 }
 
 /// EntityRef ::= '&' Name ';'

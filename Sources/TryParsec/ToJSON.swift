@@ -1,7 +1,7 @@
 // MARK: encode
 
 /// Converts `input` (which conforms to `ToJSON` protocol) to JSON string.
-public func encode<TJ: ToJSON>(input: TJ) -> String
+public func encode<TJ: ToJSON>(_ input: TJ) -> String
 {
     return TJ.toJSON(input).jsonString
 }
@@ -10,12 +10,12 @@ public func encode<TJ: ToJSON>(input: TJ) -> String
 
 public protocol ToJSON
 {
-    static func toJSON(value: Self) -> JSON
+    static func toJSON(_ value: Self) -> JSON
 }
 
 extension JSON: ToJSON
 {
-    public static func toJSON(value: JSON) -> JSON
+    public static func toJSON(_ value: JSON) -> JSON
     {
         return value
     }
@@ -23,48 +23,48 @@ extension JSON: ToJSON
 
 extension String: ToJSON
 {
-    public static func toJSON(value: String) -> JSON
+    public static func toJSON(_ value: String) -> JSON
     {
-        return JSON.String(value)
+        return JSON.string(value)
     }
 }
 
 extension Int: ToJSON
 {
-    public static func toJSON(value: Int) -> JSON
+    public static func toJSON(_ value: Int) -> JSON
     {
-        return JSON.Number(value.double)
+        return JSON.number(value.double)
     }
 }
 
 extension Float: ToJSON
 {
-    public static func toJSON(value: Float) -> JSON
+    public static func toJSON(_ value: Float) -> JSON
     {
-        return JSON.Number(value.double)
+        return JSON.number(value.double)
     }
 }
 
 extension Double: ToJSON
 {
-    public static func toJSON(value: Double) -> JSON
+    public static func toJSON(_ value: Double) -> JSON
     {
-        return JSON.Number(value.double)
+        return JSON.number(value.double)
     }
 }
 
 extension Bool: ToJSON
 {
-    public static func toJSON(value: Bool) -> JSON
+    public static func toJSON(_ value: Bool) -> JSON
     {
-        return JSON.Bool(value)
+        return JSON.bool(value)
     }
 }
 
 /// - Warning: Nested container is not supported.
 extension Array: ToJSON // where Element: ToJSON
 {
-    public static func toJSON(arr: [Element]) -> JSON
+    public static func toJSON(_ arr: [Element]) -> JSON
     {
         return _reflectToJSON(arr)
     }
@@ -73,7 +73,7 @@ extension Array: ToJSON // where Element: ToJSON
 /// - Warning: Nested container is not supported.
 extension Dictionary: ToJSON // where Key == String, Value: ToJSON
 {
-    public static func toJSON(dict: Dictionary) -> JSON
+    public static func toJSON(_ dict: Dictionary) -> JSON
     {
         return _reflectToJSON(dict)
     }
@@ -81,13 +81,13 @@ extension Dictionary: ToJSON // where Key == String, Value: ToJSON
 
 extension Optional /*: ToJSON */ where Wrapped: ToJSON
 {
-    public static func toJSON(value: Optional) -> JSON
+    public static func toJSON(_ value: Optional) -> JSON
     {
         if let value = value {
             return Wrapped.toJSON(value)
         }
         else {
-            return JSON.Null
+            return JSON.null
         }
     }
 }
@@ -98,7 +98,7 @@ extension Optional /*: ToJSON */ where Wrapped: ToJSON
 ///
 /// - TODO: Remove this once HKT is supported.
 ///
-private func _reflectToJSON(anyValue: Any) -> JSON
+private func _reflectToJSON(_ anyValue: Any) -> JSON
 {
     //
     // Comment-Out & Limitation & FIXME:
@@ -124,9 +124,9 @@ private func _reflectToJSON(anyValue: Any) -> JSON
 
     switch mirror.displayStyle {
 
-        case .Some(.Optional):
+        case .some(.optional):
 
-            return mirror.children.first.map { _reflectToJSON($0.1) } ?? JSON.Null
+            return mirror.children.first.map { _reflectToJSON($0.1) } ?? JSON.null
 
         //
         // Comment-Out:
@@ -143,14 +143,14 @@ private func _reflectToJSON(anyValue: Any) -> JSON
 //                guard let key = key else { continue }
 //                dict[key] = _reflectToJSON(value)
 //            }
-//            return JSON.Object(dict)
+//            return JSON.object(dict)
 
-        case .Some(.Collection):    // e.g. Array
+        case .some(.collection):    // e.g. Array
 
             let jsons = mirror.children.map { _reflectToJSON($1) }
-            return JSON.Array(jsons)
+            return JSON.array(jsons)
 
-        case .Some(.Dictionary):    // e.g. Dictionary
+        case .some(.dictionary):    // e.g. Dictionary
 
             var dict: [String : JSON] = [:]
             for (_, keyValue) in mirror.children {
@@ -166,7 +166,7 @@ private func _reflectToJSON(anyValue: Any) -> JSON
                     fatalError("`_reflectToJSON()` failed. (Using ObjC types inside Dictionary? Internal value was \(keyValue).)")
                 }
             }
-            return JSON.Object(dict)
+            return JSON.object(dict)
 
         default:
 
@@ -181,7 +181,7 @@ private func _reflectToJSON(anyValue: Any) -> JSON
                 case let value as Bool:
                     return Bool.toJSON(value)
                 case is ():
-                    return JSON.Null
+                    return JSON.null
                 default:
                     fatalError("`_reflectToJSON()` failed. (Using custom `ToJSON` instance inside Array/Dictionary? Internal value was \(anyValue).)")
             }
@@ -191,10 +191,10 @@ private func _reflectToJSON(anyValue: Any) -> JSON
 
 // MARK: ToJSON helpers
 
-/// Helper method to convert array of `(key, jsonValue)` to `JSON.Object`.
-public func toJSONObject(keyValues: [(String, JSON)]) -> JSON
+/// Helper method to convert array of `(key, jsonValue)` to `JSON.object`.
+public func toJSONObject(_ keyValues: [(String, JSON)]) -> JSON
 {
-    return JSON.Object(toDict(keyValues))
+    return JSON.object(toDict(keyValues))
 }
 
 /// Creates key-JSONValue tuple from key-rawValue.

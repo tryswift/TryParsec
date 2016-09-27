@@ -2,25 +2,25 @@
 public enum XML
 {
     /// Non-empty XML tag with associated values `(tagName, attributes, children)`.
-    case Element(String, [Attribute], [XML])
+    case element(String, [Attribute], [XML])
 
     /// Self-closing XML tag, e.g. `<hr />`.
-    case EmptyElement(String, [Attribute])
+    case emptyElement(String, [Attribute])
 
     /// `<!-- *** -->`
-    case Comment(String)
+    case comment(String)
 
     /// `<!DOCTYPE *** >`
-    case DOCTYPE(String)
+    case doctype(String)
 
     /// `<?xml *** ?>`
-    case XMLDeclaration(String)
+    case xmlDeclaration(String)
 
     /// `<? *** ?>`
-    case ProcessingInstruction(String)
+    case processingInstruction(String)
 
     /// Text content between opening & closing XML tags.
-    case Text(String)
+    case text(String)
 
     /// XML attribute,
     /// e.g. `Attribute("target", "_blank")` for `<a target="_blank">`.
@@ -42,19 +42,19 @@ extension XML: Equatable {}
 public func == (lhs: XML, rhs: XML) -> Bool
 {
     switch (lhs, rhs) {
-        case let (.Element(l), .Element(r)):
+        case let (.element(l), .element(r)):
             return l.0 == r.0 && l.1 == r.1 && l.2 == r.2
-        case let (.EmptyElement(l), .EmptyElement(r)):
+        case let (.emptyElement(l), .emptyElement(r)):
             return l.0 == r.0 && l.1 == r.1
-        case let (.Comment(l), .Comment(r)):
+        case let (.comment(l), .comment(r)):
             return l == r
-        case let (.DOCTYPE(l), .DOCTYPE(r)):
+        case let (.doctype(l), .doctype(r)):
             return l == r
-        case let (.XMLDeclaration(l), .XMLDeclaration(r)):
+        case let (.xmlDeclaration(l), .xmlDeclaration(r)):
             return l == r
-        case let (.ProcessingInstruction(l), .ProcessingInstruction(r)):
+        case let (.processingInstruction(l), .processingInstruction(r)):
             return l == r
-        case let (.Text(l), .Text(r)):
+        case let (.text(l), .text(r)):
             return l == r
         default:
             return false
@@ -66,13 +66,13 @@ extension XML: CustomStringConvertible
     public var description: Swift.String
     {
         switch self {
-            case let .Element(v, attrs, xmls):  return ".Element(\(v), \(attrs), \(xmls))"
-            case let .EmptyElement(v, attrs):   return ".EmptyElement(\(v), \(attrs))"
-            case let .Comment(v):               return ".Comment(\(v))"
-            case let .DOCTYPE(v):               return ".DOCTYPE(\(v))"
-            case let .XMLDeclaration(v):        return ".XMLDeclaration(\(v))"
-            case let .ProcessingInstruction(v): return ".ProcessingInstruction(\(v))"
-            case let .Text(v):                  return ".Text(\(v))"
+            case let .element(v, attrs, xmls):  return ".element(\(v), \(attrs), \(xmls))"
+            case let .emptyElement(v, attrs):   return ".emptyElement(\(v), \(attrs))"
+            case let .comment(v):               return ".comment(\(v))"
+            case let .doctype(v):               return ".doctype(\(v))"
+            case let .xmlDeclaration(v):        return ".xmlDeclaration(\(v))"
+            case let .processingInstruction(v): return ".processingInstruction(\(v))"
+            case let .text(v):                  return ".text(\(v))"
         }
     }
 }
