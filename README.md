@@ -32,14 +32,14 @@ expect(csv) == [["foo", "bar", "baz"], ["1", "22", "333"]]
 // XML
 let xmlString = "<p class=\"welcome\"><a href=\"underground.html\" target=\"_blank\">Hello</a><?php echo ' Cruel'; ?> World<!-- 💀 --><![CDATA[💣->😇]]></p>"
 let xml = parseXML(xmlString).value
-expect(xml) == [.Element("p", [XML.Attribute("class", "welcome")], [.Element("a", [XML.Attribute("href", "underground.html"), XML.Attribute("target", "_blank")], [.Text("Hello")]), .ProcessingInstruction("php echo ' Cruel'; "), .Text(" World"), .Comment(" 💀 "), .Text("💣->😇")])]
+expect(xml) == [.element("p", [XML.Attribute("class", "welcome")], [.element("a", [XML.Attribute("href", "underground.html"), XML.Attribute("target", "_blank")], [.text("Hello")]), .processingInstruction("php echo ' Cruel'; "), .text(" World"), .comment(" 💀 "), .text("💣->😇")])]
 
 // JSON
 let jsonString = "{ \"string\" : \"hello\", \"array\" : [1, \"two\", [true, null]] }"
 let json = parseJSON(jsonString).value
-expect(json) == JSON.Object([
-    "string" : .String("hello"),
-    "array" : .Array([.Number(1), .String("two"), .Array([.Bool(true), .Null])])
+expect(json) == JSON.object([
+    "string" : .string("hello"),
+    "array" : .array([.number(1), .string("two"), .array([.bool(true), .null])])
 ])
 ```
 
@@ -103,7 +103,7 @@ For `curry`ing, see [thoughtbot/Curry](https://github.com/thoughtbot/Curry) for 
 
 This library is heavily inspired by following developers & libraries:
 
-- Bryan O'Sullivan: Author of [Attoparsec](https://hackage.haskell.org/package/attoparsec) & [Aeson] (https://hackage.haskell.org/package/aeson) (Haskell)
+- Bryan O'Sullivan: Author of [Attoparsec](https://hackage.haskell.org/package/attoparsec) & [Aeson](https://hackage.haskell.org/package/aeson) (Haskell)
 - Daan Leijen: Author of [Parsec](https://hackage.haskell.org/package/parsec) (Haskell)
 - thoughtbot: Author of [Argo](https://github.com/thoughtbot/Argo) (Swift JSON decoding library)
 
