@@ -10,6 +10,7 @@
 		1F00BBC81C619CFE00076D3C /* Optional+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F00BBC71C619CFE00076D3C /* Optional+Helper.swift */; };
 		1F110F061B8C165B00798BA0 /* Parser+Combinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F110F051B8C165B00798BA0 /* Parser+Combinator.swift */; };
 		1F110F0A1B8C18E100798BA0 /* Parser+Arithmetic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F110F091B8C18E100798BA0 /* Parser+Arithmetic.swift */; };
+		1F1FE2841D9A0A68003F4012 /* Curry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F1FE2831D9A0A68003F4012 /* Curry.framework */; };
 		1F258C941C2F09FA00D9C0E2 /* Result+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F258C931C2F09FA00D9C0E2 /* Result+Helper.swift */; };
 		1F2A1A7D1D327A340012B5C3 /* PermutationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F2A1A7B1D32797C0012B5C3 /* PermutationSpec.swift */; };
 		1F3889D71D92148300363734 /* Curry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FBAE54F1D91FFF8001D3D0F /* Curry.framework */; };
@@ -96,6 +97,7 @@
 		1F00BBC71C619CFE00076D3C /* Optional+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Optional+Helper.swift"; sourceTree = "<group>"; };
 		1F110F051B8C165B00798BA0 /* Parser+Combinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Parser+Combinator.swift"; sourceTree = "<group>"; };
 		1F110F091B8C18E100798BA0 /* Parser+Arithmetic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Parser+Arithmetic.swift"; sourceTree = "<group>"; };
+		1F1FE2831D9A0A68003F4012 /* Curry.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Curry.framework; path = Carthage/Checkouts/Curry/build/Debug/Curry.framework; sourceTree = "<group>"; };
 		1F258C931C2F09FA00D9C0E2 /* Result+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Result+Helper.swift"; sourceTree = "<group>"; };
 		1F2A1A7B1D32797C0012B5C3 /* PermutationSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermutationSpec.swift; sourceTree = "<group>"; };
 		1F39576D1BD54767000BD9A0 /* Operators+JSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Operators+JSON.swift"; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F1FE2841D9A0A68003F4012 /* Curry.framework in Frameworks */,
 				1FC183B11C6AC23A00FB1EC9 /* TryParsec.framework in Frameworks */,
 				1F9798FF1D916A5300116F00 /* Runes.framework in Frameworks */,
 				1F9799001D916A5600116F00 /* Result.framework in Frameworks */,
@@ -215,6 +218,7 @@
 		1F92984F1BC3598300B68621 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1F1FE2831D9A0A68003F4012 /* Curry.framework */,
 				1F9798FB1D9169F000116F00 /* Runes.framework */,
 				1F9798FD1D916A3800116F00 /* Result.framework */,
 				1FBAE54F1D91FFF8001D3D0F /* Curry.framework */,
