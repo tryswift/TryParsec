@@ -110,7 +110,8 @@ This library is heavily inspired by following developers & libraries:
 
 ## References
 
-- [Parser Combinator in Swift // Speaker Deck](https://speakerdeck.com/inamiy/parser-combinator-in-swift)
+- [Parser Combinators in Swift](https://realm.io/news/tryswift-yasuhiro-inami-parser-combinator/) (video)
+- [Parser Combinator in Swift // Speaker Deck](https://speakerdeck.com/inamiy/parser-combinator-in-swift) (slide)
 
 
 ## Licence
