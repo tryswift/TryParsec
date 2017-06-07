@@ -30,9 +30,9 @@ public func manyTill<In, Out, Out2, Outs: RangeReplaceableCollection>(
     ) -> Parser<In, Outs>
     where Outs.Iterator.Element == Out
 {
-    return fix { recur in {
-        (end *> pure(Outs())) <|> (cons <^> p <*> recur())
-    }}()
+    return fix { recur in { _ in
+        (end *> pure(Outs())) <|> (cons <^> p <*> recur(()))
+    }}(())
 }
 
 /// Skips zero or more occurrences of `p`.
@@ -188,12 +188,12 @@ public func chainr1<In, Out>(
     return fix { recur in { _ in
         p >>- { x in
             (op >>- { f in
-                recur() >>- { y in
+                recur(()) >>- { y in
                     pure(f(x, y))
                 }
             }) <|> pure(x)
         }
-    }}()
+    }}(())
 }
 
 /// Applies `p` without consuming any input.

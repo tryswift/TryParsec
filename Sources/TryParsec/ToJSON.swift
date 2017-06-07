@@ -147,7 +147,10 @@ private func _reflectToJSON(_ anyValue: Any) -> JSON
 
         case .some(.collection):    // e.g. Array
 
-            let jsons = mirror.children.map { _reflectToJSON($1) }
+            let jsons = mirror.children.map { arg -> JSON in // NOTE: Requires explict type annotation in Swift 4
+                let (_, value) = arg
+                return _reflectToJSON(value)
+            }
             return JSON.array(jsons)
 
         case .some(.dictionary):    // e.g. Dictionary

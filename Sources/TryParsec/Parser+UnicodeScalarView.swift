@@ -68,7 +68,8 @@ public func take(_ count: Int) -> Parser<String.UnicodeScalarView, String.Unicod
 public func takeWhile(_ predicate: @escaping (UnicodeScalar) -> Bool) -> Parser<String.UnicodeScalarView, String.UnicodeScalarView>
 {
     return Parser { input in
-        fix { recur in { input, acc in
+        fix { recur in { arg in
+            let (input, acc) = arg
             if let (head, tail) = uncons(input), predicate(head) {
                 return recur((tail, acc + [head]))
             }
@@ -224,7 +225,7 @@ private func _endOfLine() -> Parser<String.UnicodeScalarView, ()>
 
 // MARK: String -> Number
 
-private func _signed<N: SignedNumber>() -> Parser<String.UnicodeScalarView, (N) -> N>
+private func _signed<N: SignedNumeric>() -> Parser<String.UnicodeScalarView, (N) -> N>
 {
     return char("-") *> pure(negate)
         <|> zeroOrOne(char("+")) *> pure(id)
