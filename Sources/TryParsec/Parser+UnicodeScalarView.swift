@@ -11,7 +11,7 @@ public func satisfy(_ predicate: @escaping (UnicodeScalar) -> Bool) -> Parser<St
 {
     return Parser { input in
         if let (head, tail) = uncons(input), predicate(head) {
-            return .done(tail, head)
+            return .done(String(tail).unicodeScalars, head)
         }
         else {
             return .fail(input, [], "satisfy")
@@ -24,7 +24,7 @@ public func skip(_ predicate: @escaping (UnicodeScalar) -> Bool) -> Parser<Strin
 {
     return Parser { input in
         if let (head, tail) = uncons(input), predicate(head) {
-            return .done(tail, ())
+            return .done(String(tail).unicodeScalars, ())
         }
         else {
             return .fail(input, [], "skip")
@@ -38,7 +38,7 @@ public func skipWhile(_ predicate: @escaping (UnicodeScalar) -> Bool) -> Parser<
     return Parser { input in
         fix { recur in { input in
             if let (head, tail) = uncons(input), predicate(head) {
-                return recur(tail)
+                return recur(String(tail).unicodeScalars)
             }
             else {
                 return .done(input, ())
@@ -56,7 +56,7 @@ public func take(_ count: Int) -> Parser<String.UnicodeScalarView, String.Unicod
     return Parser { input in
         if input.count >= count {
             let (prefix, suffix) = splitAt(count)(input)
-            return .done(suffix, prefix)
+            return .done(String(suffix).unicodeScalars, String(prefix).unicodeScalars)
         }
         else {
             return .fail(input, [], "take(\(count))")
@@ -71,7 +71,7 @@ public func takeWhile(_ predicate: @escaping (UnicodeScalar) -> Bool) -> Parser<
         fix { recur in { arg in
             let (input, acc) = arg
             if let (head, tail) = uncons(input), predicate(head) {
-                return recur((tail, acc + [head]))
+                return recur((String(tail).unicodeScalars, acc + [head]))
             }
             else {
                 return .done(input, acc)
@@ -106,7 +106,7 @@ public func string(_ str: String.UnicodeScalarView) -> Parser<String.UnicodeScal
 //    return _string(str, id)
 
     if let (head, tail) = uncons(str) {
-        return char(head) *> string(tail) *> pure(str)
+        return char(head) *> string(String(tail).unicodeScalars) *> pure(str)
     }
     else {
         return pure(String.UnicodeScalarView())
@@ -121,7 +121,7 @@ private func _string(_ str: String.UnicodeScalarView, _ f: @escaping (UnicodeSca
         if prefix.map(f) == str.map(f) {
             let index = input.index(input.startIndex, offsetBy: strCount)
             let suffix = input.suffix(from: index)
-            return .done(suffix, prefix)
+            return .done(String(suffix).unicodeScalars, String(prefix).unicodeScalars)
         }
         else {
             return .fail(input, [], "_string")

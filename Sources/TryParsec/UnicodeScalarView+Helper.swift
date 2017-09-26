@@ -112,5 +112,5 @@ private func _trim(_ cs: String.UnicodeScalarView, _ trimsStart: Bool, _ trimsEn
         endIndex = cs.index(before: endIndex)
     }
 
-    return cs[startIndex...endIndex]
+    return String.UnicodeScalarView(cs[startIndex...endIndex])
 }
