@@ -15,7 +15,7 @@ private func _symbol(_ str: String.UnicodeScalarView) -> Parser<String.UnicodeSc
 
 private func _natural() -> Parser<String.UnicodeScalarView, Int>
 {
-    return skipSpaces *> many1(digit) <* skipSpaces <&> { Int(String($0))! }
+    return skipSpaces *> many1(digit) <* skipSpaces <&> { Int(String($0 as String.UnicodeScalarView))! }
 }
 
 internal let expr = _expr()

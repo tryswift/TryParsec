@@ -30,7 +30,7 @@ internal let xmlDeclaration = _xmlDeclaration()
 private func _xmlDeclaration() -> Parser<String.UnicodeScalarView, XML>
 {
     return string("<?xml") *> manyTill(any, string("?>"))
-        <&> { .xmlDeclaration(String($0)) }
+        <&> { .xmlDeclaration(String($0 as String.UnicodeScalarView)) }
 }
 
 /// doctypedecl ::= '<!DOCTYPE' S Name ( S ExternalID )? S? ( '[' intSubset ']' S? )? '>'
@@ -38,7 +38,7 @@ internal let doctype = _doctype()
 private func _doctype() -> Parser<String.UnicodeScalarView, XML>
 {
     return string("<!DOCTYPE") *> manyTill(any, string(">"))
-        <&> { .doctype(String($0)) }
+        <&> { .doctype(String($0 as String.UnicodeScalarView)) }
 }
 
 /// Comment ::= '<!--' ( Char - '-' | '-' ( Char - '-' ) )* '-->'
@@ -46,7 +46,7 @@ internal let comment = _comment()
 private func _comment() -> Parser<String.UnicodeScalarView, XML>
 {
     return string("<!--") *> manyTill(any, string("-->"))
-        <&> { .comment(String($0)) }
+        <&> { .comment(String($0 as String.UnicodeScalarView)) }
 }
 
 /// - CDSect ::= CDStart CData CDEnd
@@ -57,7 +57,7 @@ internal let cdata = _cdata()
 private func _cdata() -> Parser<String.UnicodeScalarView, XML>
 {
     return string("<![CDATA[") *> manyTill(any, string("]]>"))
-        <&> { .text(String($0)) }
+        <&> { .text(String($0 as String.UnicodeScalarView)) }
 }
 
 /// PI ::= '<?' PITarget ( S ( Char* - ( Char* '?>' Char* ) ) )? '?>'
@@ -65,7 +65,7 @@ internal let processingInstruction = _processingInstruction()
 private func _processingInstruction() -> Parser<String.UnicodeScalarView, XML>
 {
     return string("<?") *> manyTill(any, string("?>"))
-        <&> { .processingInstruction(String($0)) }
+        <&> { .processingInstruction(String($0 as String.UnicodeScalarView)) }
 }
 
 /// Misc ::= Comment | PI | S
@@ -130,7 +130,7 @@ private func _endTag(_ tagName: String.UnicodeScalarView) -> Parser<String.Unico
 internal let charData = _charData()
 private func _charData() -> Parser<String.UnicodeScalarView, XML>
 {
-    return many1(noneOf("><&")) <&> { XML.text(String($0)) }
+    return many1(noneOf("><&")) <&> { XML.text(String($0 as String.UnicodeScalarView)) }
 }
 
 /// Attribute ::= Name Eq AttValue

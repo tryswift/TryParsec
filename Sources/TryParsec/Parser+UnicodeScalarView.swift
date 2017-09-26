@@ -234,7 +234,7 @@ private func _signed<N: SignedNumeric>() -> Parser<String.UnicodeScalarView, (N)
 private func _real() -> Parser<String.UnicodeScalarView, Double>
 {
     return many1(digit) >>- { digits in
-        pure(Double(String(digits))!)
+        pure(Double(String(digits as String.UnicodeScalarView))!)
     }
 }
 
@@ -242,7 +242,7 @@ private func _frac() -> Parser<String.UnicodeScalarView, Double>
 {
     return (char(".")
         *> many1(digit) >>- { digits in
-            pure(Double(String(cons("0")(cons(".")(digits))))!)
+            pure(Double(String((cons("0")(cons(".")(digits))) as String.UnicodeScalarView))!)
         }) <|> pure(0.0)
 }
 
@@ -251,7 +251,7 @@ private func _exp() -> Parser<String.UnicodeScalarView, Int>
     return (oneOf("eE")
         *> _signed() >>- { doExp in
             many1(digit) >>- { digits in
-                pure(doExp(Int(String(digits))!))
+                pure(doExp(Int(String(digits as String.UnicodeScalarView))!))
             }
         }) <|> pure(0)
 }

@@ -73,7 +73,7 @@ private func _stringLiteral() -> Parser<String.UnicodeScalarView, String.Unicode
         <&> { _escapedCharMapping[$0]! }
     let unicodeChar = string("\\u")
         *> count(4, hexDigit)
-        <&> { UnicodeScalar(Int(String($0), radix: 16)!)! }
+        <&> { UnicodeScalar(Int(String($0 as String.UnicodeScalarView), radix: 16)!)! }
     let validChar = normalChar <|> escapedChar <|> unicodeChar
 
     return char("\"") *> many(validChar) <* char("\"")
