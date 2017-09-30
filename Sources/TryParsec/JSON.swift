@@ -40,7 +40,7 @@ extension JSON: RawRepresentable
             case let .string(v): return v
             case let .number(v): return v
             case let .bool(v):   return v
-            case .null:          return ""
+            case .null:          return ()
             case let .array(v):  return v
             case let .object(v): return v
         }
