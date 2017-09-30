@@ -11,26 +11,26 @@ class HelperSpec: QuickSpec
 
             it("splitAt(1)") {
                 let (heads, tails) = splitAt(1)("abc" as USV)
-                expect(heads) == ["a"]
-                expect(tails) == ["b", "c"]
+                expect(String(heads).unicodeScalars) == ["a"]
+                expect(String(tails).unicodeScalars) == ["b", "c"]
             }
 
             it("splitAt(0)") {
                 let (heads, tails) = splitAt(0)("abc" as USV)
-                expect(heads) == []
-                expect(tails) == ["a", "b", "c"]
+                expect(String(heads).unicodeScalars) == []
+                expect(String(tails).unicodeScalars) == ["a", "b", "c"]
             }
 
             it("splitAt(999)") {
                 let (heads, tails) = splitAt(999)("abc" as USV)
-                expect(heads) == ["a", "b", "c"]
-                expect(tails) == []
+                expect(String(heads).unicodeScalars) == ["a", "b", "c"]
+                expect(String(tails).unicodeScalars) == []
             }
 
             it("splitAt(0)(\"\")") {
                 let (heads, tails) = splitAt(0)("" as USV)
-                expect(heads) == []
-                expect(tails) == []
+                expect(String(heads).unicodeScalars) == []
+                expect(String(tails).unicodeScalars) == []
             }
 
         }
