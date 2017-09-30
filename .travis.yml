@@ -5,7 +5,7 @@ env:
 matrix:
   include:
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode9
       language: objective-c
       script:
         - set -o pipefail
@@ -14,7 +14,7 @@ matrix:
         - JOB=xcodebuild-macOS
 
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode9
       language: objective-c
       script:
         - set -o pipefail
@@ -23,7 +23,7 @@ matrix:
         - JOB=xcodebuild-iOS
 
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode9
       language: objective-c
       script:
         - set -o pipefail
@@ -32,7 +32,7 @@ matrix:
         - JOB=xcodebuild-tvOS
 
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode9
       language: objective-c
       script:
         - set -o pipefail
@@ -41,13 +41,13 @@ matrix:
         - JOB=xcodebuild-watchOS
 
     # - os: osx
-    #   osx_image: xcode8
+    #   osx_image: xcode9
     #   script:
     #     - pod lib lint --allow-warnings
     #   env: JOB=pod-lint
 
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode9
       language: generic
       script:
         - swift build
