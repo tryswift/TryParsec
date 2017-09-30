@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Result",
+        "repositoryURL": "https://github.com/antitypical/Result.git",
+        "state": {
+          "branch": null,
+          "revision": "7477584259bfce2560a19e06ad9f71db441fff11",
+          "version": "3.2.4"
+        }
+      },
+      {
+        "package": "Runes",
+        "repositoryURL": "https://github.com/thoughtbot/Runes.git",
+        "state": {
+          "branch": null,
+          "revision": "e1bb1f7a589fe9172dc3410203f8b62373ea92a4",
+          "version": "4.1.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}

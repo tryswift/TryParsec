@@ -3,7 +3,7 @@
 	url = https://github.com/antitypical/Result.git
 [submodule "Carthage/Checkouts/Curry"]
 	path = Carthage/Checkouts/Curry
-	url = https://github.com/inamiy/Curry.git
+	url = https://github.com/thoughtbot/Curry.git
 [submodule "Carthage/Checkouts/xcconfigs"]
 	path = Carthage/Checkouts/xcconfigs
 	url = https://github.com/mrackwitz/xcconfigs.git
@@ -15,4 +15,4 @@
 	url = https://github.com/Quick/Nimble.git
 [submodule "Carthage/Checkouts/Runes"]
 	path = Carthage/Checkouts/Runes
-	url = https://github.com/inamiy/Runes.git
+	url = https://github.com/thoughtbot/Runes.git
