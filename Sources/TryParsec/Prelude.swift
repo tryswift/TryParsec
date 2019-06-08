@@ -40,12 +40,12 @@ internal func uncons<C: Collection>(_ xs: C) -> (C.Iterator.Element, C.SubSequen
 /// `splitAt(count)(xs)` returns a tuple of `xs.prefixUpTo(count)` and `suffixFrom(count)`,
 /// but either of those may be empty.
 /// - Precondition: `count >= 0`
-internal func splitAt<C: Collection>(_ count: C.IndexDistance) -> (C) -> (C.SubSequence, C.SubSequence)
+internal func splitAt<C: Collection>(_ count: Int) -> (C) -> (C.SubSequence, C.SubSequence)
 {
     precondition(count >= 0, "`splitAt(count)` must have `count >= 0`.")
 
     return { xs in
-        let midIndex = xs.index(xs.startIndex, offsetBy: count)
+        let midIndex = xs.index(xs.startIndex, offsetBy: count, limitedBy: xs.endIndex) ?? xs.endIndex
         if count <= xs.count {
             return (xs.prefix(upTo: midIndex), xs.suffix(from: midIndex))
         }
