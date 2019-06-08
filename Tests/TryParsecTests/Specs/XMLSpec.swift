@@ -325,6 +325,7 @@ class XMLSpec: QuickSpec
 
             }
 
+            #if !SWIFT_PACKAGE
             describe("xmlDocument") {
 
                 it("succeeds") {
@@ -340,6 +341,7 @@ class XMLSpec: QuickSpec
                 }
 
             }
+            #endif
 
         }
 
@@ -349,6 +351,7 @@ class XMLSpec: QuickSpec
                 print("------------------------------")
             }
 
+            #if !SWIFT_PACKAGE
             it("parses XML files") {
                 let files = [ "test1", "test2", "test3", "test4", "test5" ]
 
@@ -366,6 +369,7 @@ class XMLSpec: QuickSpec
                     print("")
                 }
             }
+            #endif
 
         }
     }

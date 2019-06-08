@@ -1,5 +1,3 @@
-import Result
-
 // MARK: decode
 
 /// Converts JSON string to `FromJSON` value.

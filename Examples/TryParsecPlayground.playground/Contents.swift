@@ -14,7 +14,6 @@ or, use https://github.com/fastlane/fastlane :
 
 import Cocoa
 import Runes
-import Result
 import Curry  // test-dependency
 import TryParsec
 

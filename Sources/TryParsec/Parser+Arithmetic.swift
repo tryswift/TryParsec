@@ -1,5 +1,4 @@
 import Runes
-import Result
 
 /// Parses simple arithmetic expression.
 /// Currently supports: +, -, *, /, (, ), naturalNumber.

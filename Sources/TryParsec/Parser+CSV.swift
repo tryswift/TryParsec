@@ -1,5 +1,4 @@
 import Runes
-import Result
 
 //
 // CSV (RFC4180)

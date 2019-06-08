@@ -1,6 +1,5 @@
 import TryParsec
 import Runes
-import Result
 import Curry
 
 struct _Model: FromJSON, ToJSON

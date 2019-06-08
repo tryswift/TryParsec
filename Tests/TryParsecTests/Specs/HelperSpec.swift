@@ -1,5 +1,4 @@
 @testable import TryParsec
-import Result
 import Quick
 import Nimble
 

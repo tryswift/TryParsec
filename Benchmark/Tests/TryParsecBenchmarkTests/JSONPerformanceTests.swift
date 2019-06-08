@@ -1,5 +1,4 @@
 import XCTest
-import Result
 import Curry
 import TryParsec
 

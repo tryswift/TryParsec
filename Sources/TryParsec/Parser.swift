@@ -1,5 +1,4 @@
 import Runes
-import Result
 
 infix operator >>- : RunesMonadicPrecedenceLeft // redefine
 

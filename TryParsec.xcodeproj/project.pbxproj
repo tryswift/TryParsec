@@ -27,10 +27,10 @@
 		1F7B769D1C68F40F008DC0A1 /* XMLSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA466931C67F45A0089C8D9 /* XMLSpec.swift */; };
 		1F8A4FC21BBB6B1D00BE5CDD /* Parser+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8A4FC11BBB6B1D00BE5CDD /* Parser+JSON.swift */; };
 		1F92984C1BC3534A00B68621 /* Reply.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F92984B1BC3534A00B68621 /* Reply.swift */; };
-		1F9798FE1D916A3800116F00 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F9798FD1D916A3800116F00 /* Result.framework */; };
 		1F9798FF1D916A5300116F00 /* Runes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F9798FB1D9169F000116F00 /* Runes.framework */; };
 		1F9799001D916A5600116F00 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F9798FD1D916A3800116F00 /* Result.framework */; };
 		1F9824B31C41372C00D68090 /* ParseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9824B21C41372C00D68090 /* ParseError.swift */; };
+		1F9C891322AC79C300DE2833 /* Result+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F9C891222AC79C300DE2833 /* Result+Helper.swift */; };
 		1FA466881C67F3FE0089C8D9 /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA466851C67F3FE0089C8D9 /* TestHelper.swift */; };
 		1FA466891C67F3FE0089C8D9 /* TestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA466861C67F3FE0089C8D9 /* TestModel.swift */; };
 		1FA4668A1C67F3FE0089C8D9 /* XCTestCase+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA466871C67F3FE0089C8D9 /* XCTestCase+Helper.swift */; };
@@ -106,6 +106,7 @@
 		1F9798FB1D9169F000116F00 /* Runes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Runes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F9798FD1D916A3800116F00 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Result.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F9824B21C41372C00D68090 /* ParseError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseError.swift; sourceTree = "<group>"; };
+		1F9C891222AC79C300DE2833 /* Result+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Result+Helper.swift"; sourceTree = "<group>"; };
 		1FA466851C67F3FE0089C8D9 /* TestHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
 		1FA466861C67F3FE0089C8D9 /* TestModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestModel.swift; sourceTree = "<group>"; };
 		1FA466871C67F3FE0089C8D9 /* XCTestCase+Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Helper.swift"; sourceTree = "<group>"; };
@@ -184,7 +185,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F42CD141D937D48009D37FD /* Runes.framework in Frameworks */,
-				1F9798FE1D916A3800116F00 /* Result.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,7 +234,7 @@
 				1FA466871C67F3FE0089C8D9 /* XCTestCase+Helper.swift */,
 			);
 			name = Helpers;
-			path = ../excludedTests/TryParsec/Helpers;
+			path = TryParsecTests/Helpers;
 			sourceTree = "<group>";
 		};
 		1FA4668B1C67F45A0089C8D9 /* Specs */ = {
@@ -251,7 +251,7 @@
 				1FA466901C67F45A0089C8D9 /* JSONSpec.swift */,
 			);
 			name = Specs;
-			path = ../excludedTests/TryParsec/Specs;
+			path = TryParsecTests/Specs;
 			sourceTree = "<group>";
 		};
 		1FAAF15E1BD2FEF500B26694 /* JSON */ = {
@@ -305,6 +305,7 @@
 			children = (
 				1FE60F5D1B8CA7FF00189CE0 /* Operators.swift */,
 				1FCCF9111D309D0400B6B86E /* Operators+Permutation.swift */,
+				1F9C891222AC79C300DE2833 /* Result+Helper.swift */,
 				1FD6385F1C37A34500941439 /* UnicodeScalarView+Helper.swift */,
 				1FD638591C378EAB00941439 /* RangeReplaceableCollectionType+Helper.swift */,
 				1F258C811C2EF53A00D9C0E2 /* Internals */,
@@ -630,6 +631,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1F9C891322AC79C300DE2833 /* Result+Helper.swift in Sources */,
 				1F110F061B8C165B00798BA0 /* Parser+Combinator.swift in Sources */,
 				1FE60F5C1B8C9BFF00189CE0 /* Parser+CSV.swift in Sources */,
 				1F00BBC81C619CFE00076D3C /* Optional+Helper.swift in Sources */,

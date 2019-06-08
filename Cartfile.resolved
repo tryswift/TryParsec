@@ -1,6 +1,5 @@
 github "Quick/Nimble" "v8.0.2"
 github "Quick/Quick" "v2.1.0"
-github "antitypical/Result" "5.0.0"
 github "mrackwitz/xcconfigs" "3.0"
 github "thoughtbot/Curry" "v4.0.2"
-github "thoughtbot/Runes" "v5.0.0"
+github "thoughtbot/Runes" "v4.2.1"

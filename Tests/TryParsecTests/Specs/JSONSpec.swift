@@ -1,5 +1,4 @@
 @testable import TryParsec
-import Result
 import Quick
 import Nimble
 
@@ -202,6 +201,7 @@ class JSONSpec: QuickSpec
                 print("------------------------------")
             }
 
+            #if !SWIFT_PACKAGE
             it("parses JSON files") {
                 let files = [ "test1", "test2", "test3", "test4", "test5", "escape" ]
 
@@ -219,7 +219,9 @@ class JSONSpec: QuickSpec
                     print("")
                 }
             }
+            #endif
 
+            #if !SWIFT_PACKAGE
             it("decodes JSON file as _Model & encode") {
                 let jsonString = type(of: self).loadString("basic", "json")
                 print("jsonString =", jsonString)
@@ -231,6 +233,7 @@ class JSONSpec: QuickSpec
                 let encoded = encode(decoded.value!)
                 print("encoded =", encoded)
             }
+            #endif
 
         }
 
